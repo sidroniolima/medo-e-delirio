@@ -38,12 +38,12 @@ class _HomeState extends State<Home> {
         body: CustomScrollView(slivers: [
           SliverAppBar(
               pinned: false,
-              expandedHeight: 150.0,
-              titleSpacing: 20,
+              expandedHeight: screenSize.height * .25,
+              toolbarHeight: 0,
               flexibleSpace: FlexibleSpaceBar(
                 background: Image.asset(
                   'assets/images/med_full_logo.png',
-                  fit: BoxFit.fitWidth,
+                  fit: BoxFit.fitHeight,
                 ),
               )),
           SliverGrid.count(
@@ -122,7 +122,6 @@ class MediaPanel extends StatelessWidget {
               this.label,
               overflow: TextOverflow.clip,
             ),
-            Spacer(),
             Padding(
               padding: EdgeInsets.only(bottom: screenSize.width * .02),
               child: Text(
@@ -131,37 +130,44 @@ class MediaPanel extends StatelessWidget {
                 style: TextStyle(fontSize: 12.0, color: Colors.yellow),
               ),
             ),
+            Spacer(),
             Align(
               alignment: Alignment.bottomRight,
               child: isPlaying
                   ? SizedBox(
-                      width: 12,
-                      height: 12,
+                      width: screenSize.height * 0.04,
+                      height: screenSize.height * 0.04,
                       child: Center(
                         child: CircularProgressIndicator(
-                          backgroundColor: Colors.white,
+                          valueColor: AlwaysStoppedAnimation<Color>(
+                            Color(0XFF243119),
+                          ),
                           strokeWidth: 1.0,
                         ),
                       ),
                     )
-                  : Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        GestureDetector(
-                            child: FaIcon(
-                              FontAwesomeIcons.shareAlt,
-                              size: 12,
-                              color: Colors.white,
-                            ),
-                            onTap: this.onLongPress),
-                        FaIcon(
-                          FontAwesomeIcons.play,
-                          size: 12.0,
-                          color: Colors.white,
+                  : GestureDetector(
+                      onTap: this.onLongPress,
+                      child: Container(
+                        width: screenSize.height * 0.04,
+                        height: screenSize.height * 0.04,
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(8.0),
+                          border: Border.all(
+                            color: Color(0XFF243119),
+                            width: 0.3,
+                          ),
                         ),
-                      ],
+                        child: Center(
+                          child: FaIcon(
+                            FontAwesomeIcons.shareAlt,
+                            size: screenSize.height * 0.02,
+                            color: Color(0XFF243119),
+                          ),
+                        ),
+                      ),
                     ),
-            )
+            ),
           ],
         ),
       ),
