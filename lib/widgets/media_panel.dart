@@ -9,6 +9,8 @@ class MediaPanel extends StatelessWidget {
     @required this.label,
     @required this.isPlaying,
     @required this.author,
+    @required this.isFavorite,
+    @required this.favoriteAction,
     this.onLongPress,
   }) : super(key: key);
 
@@ -17,7 +19,9 @@ class MediaPanel extends StatelessWidget {
   final String label;
   final String author;
   final bool isPlaying;
+  final bool isFavorite;
   final Function onLongPress;
+  final Function favoriteAction;
 
   @override
   Widget build(BuildContext context) {
@@ -53,10 +57,10 @@ class MediaPanel extends StatelessWidget {
               ),
             ),
             Spacer(),
-            Align(
-              alignment: Alignment.bottomCenter,
-              child: isPlaying
-                  ? SizedBox(
+            isPlaying
+                ? Align(
+                    alignment: Alignment.bottomCenter,
+                    child: SizedBox(
                       width: screenSize.height * 0.02,
                       height: screenSize.height * 0.02,
                       child: Center(
@@ -67,26 +71,19 @@ class MediaPanel extends StatelessWidget {
                           strokeWidth: 1.0,
                         ),
                       ),
-                    )
-                  : Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      children: [
-                        GestureDetector(
-                            child: FaIcon(
-                              FontAwesomeIcons.shareAlt,
-                              size: screenSize.height * 0.02,
-                              color: Colors.white,
-                            ),
-                            onTap: this.onLongPress),
-                        GestureDetector(
-                            child: FaIcon(
-                              FontAwesomeIcons.play,
-                              size: screenSize.height * 0.02,
-                              color: Colors.white,
-                            ),
-                            onTap: this.onPress),
-                      ],
-                    ),
+                    ))
+                : Container(),
+            Align(
+              alignment: Alignment.bottomRight,
+              child: GestureDetector(
+                  child: FaIcon(
+                    this.isFavorite
+                        ? FontAwesomeIcons.solidStar
+                        : FontAwesomeIcons.star,
+                    size: screenSize.height * 0.020,
+                    color: Colors.white,
+                  ),
+                  onTap: this.favoriteAction),
             ),
           ],
         ),
