@@ -29,14 +29,11 @@ class MediaPanel extends StatelessWidget {
       onTap: this.onPress,
       onLongPress: this.onLongPress,
       child: Container(
-        margin: EdgeInsets.symmetric(
-            vertical: screenSize.width * .01,
-            horizontal: screenSize.width * .01),
+        margin: EdgeInsets.symmetric(vertical: screenSize.width * .01, horizontal: screenSize.width * .01),
         padding: EdgeInsets.all(screenSize.width * .02),
         width: screenSize.width * .35,
         height: screenSize.height * .1,
-        decoration: BoxDecoration(
-            color: Color(0XFF629460), borderRadius: BorderRadius.circular(8.0)),
+        decoration: BoxDecoration(color: Color(0XFF629460), borderRadius: BorderRadius.circular(8.0)),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.start,
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -44,25 +41,23 @@ class MediaPanel extends StatelessWidget {
             Text(
               this.label,
               overflow: TextOverflow.clip,
-              style: TextStyle(
-                  fontSize: screenSize.width * .036, color: Colors.white),
+              style: TextStyle(fontSize: screenSize.width * .036, color: Colors.white),
             ),
             Padding(
               padding: EdgeInsets.only(top: screenSize.width * .02),
               child: Text(
                 this.author,
                 overflow: TextOverflow.clip,
-                style: TextStyle(
-                    fontSize: screenSize.width * .032, color: Colors.yellow),
+                style: TextStyle(fontSize: screenSize.width * .032, color: Colors.yellow),
               ),
             ),
             Spacer(),
             isPlaying
                 ? Align(
                     alignment: Alignment.bottomCenter,
-                    child: SizedBox(
-                      width: screenSize.height * 0.02,
-                      height: screenSize.height * 0.02,
+                    child: Container(
+                      width: screenSize.height * 0.025,
+                      height: screenSize.height * 0.025,
                       child: Center(
                         child: CircularProgressIndicator(
                           valueColor: AlwaysStoppedAnimation<Color>(
@@ -73,9 +68,8 @@ class MediaPanel extends StatelessWidget {
                       ),
                     ))
                 : Container(),
-            Align(
-              alignment: Alignment.bottomRight,
-              child: GestureDetector(
+
+            /*GestureDetector(
                   child: FaIcon(
                     this.isFavorite
                         ? FontAwesomeIcons.solidStar
@@ -83,8 +77,7 @@ class MediaPanel extends StatelessWidget {
                     size: screenSize.height * 0.020,
                     color: Colors.white,
                   ),
-                  onTap: this.favoriteAction),
-            ),
+                  onTap: this.favoriteAction),*/
           ],
         ),
       ),
