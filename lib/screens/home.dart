@@ -129,9 +129,11 @@ class _HomeState extends State<Home> {
                                 setState(() {
                                   this.actualIdPlayind = audio.id;
                                 });
+                                var rawURL =
+                                    'https://sidroniolima.com.br/med/mp3/${audio.fileName}';
+                                var encodedURL = Uri.encodeFull(rawURL);
 
-                                Uint8List bytes = await readBytes(
-                                    'https://sidroniolima.com.br/med/mp3/${audio.fileName}');
+                                Uint8List bytes = await readBytes(encodedURL);
                                 await Share.file('Sound', audio.fileName,
                                     bytes.buffer.asUint8List(), 'audio/*');
 
@@ -144,11 +146,11 @@ class _HomeState extends State<Home> {
                                   this.actualIdPlayind = audio.id;
                                 });
 
-                                Uint8List bytes = await readBytes(
-                                    'https://sidroniolima.com.br/med/mp3/${audio.fileName}');
-
                                 audioPlayer.setVolume(1.0);
-                                await audioPlayer.playBytes(bytes);
+                                var rawURL =
+                                    'https://sidroniolima.com.br/med/mp3/${audio.fileName}';
+                                var encodedURL = Uri.encodeFull(rawURL);
+                                await audioPlayer.play(encodedURL);
 
                                 setState(() {
                                   this.actualIdPlayind = -1;
