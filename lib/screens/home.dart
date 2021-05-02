@@ -2,11 +2,13 @@ import 'dart:typed_data';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:audioplayers/audioplayers.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:http/http.dart';
 import 'package:esys_flutter_share/esys_flutter_share.dart';
 import 'package:medo_e_delirio_app/models/audio.dart';
+import 'package:medo_e_delirio_app/viewModels/AudioListViewModel.dart';
 import 'package:medo_e_delirio_app/widgets/media_panel.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -30,6 +32,8 @@ class _HomeState extends State<Home> {
   void initState() {
     super.initState();
     audioPlayer = AudioPlayer();
+    Provider.of<AudioListViewModel>(context, listen: false)
+        .fetchMovies("batman");
   }
 
   @override
@@ -42,6 +46,7 @@ class _HomeState extends State<Home> {
   @override
   Widget build(BuildContext context) {
     Size screenSize = MediaQuery.of(context).size;
+    final vm = Provider.of<AudioListViewModel>(context);
 
     return SafeArea(
       child: Scaffold(
@@ -79,47 +84,10 @@ class _HomeState extends State<Home> {
                       ),
                     )
                   ],
-                  //bottom: PreferredSize(child: IconButton(onPressed: () {}, icon: Icon(FontAwesomeIcons.bars, color: Color(0XFF243119), size: 25.0)), preferredSize: Size.fromHeight(90.0)),
                 ),
-                /*SliverAppBar(
-                    pinned: false,
-                    expandedHeight: screenSize.height * .02,
-                    title: Row(
-                      mainAxisAlignment: MainAxisAlignment.end,
-                      children: [
-                        IconButton(
-                          onPressed: () {},
-                          icon: Icon(FontAwesomeIcons.cog, color: Colors.yellow, size: 22.0),
-                          highlightColor: Colors.red,
-                        ),
-                        */ /*DropdownButton<String>(
-                          value: dropdownValue,
-                          icon: const Icon(Icons.arrow_downward, color: Color(0XFF629460),),
-                          iconSize: 24,
-                          elevation: 16,
-                          style: const TextStyle(color: Color(0XFF629460)),
-                          underline: Container(
-                            height: 0,
-                          ),
-                          onChanged: (String newValue) {
-                            setState(() {
-                              dropdownValue = newValue;
-                            });
-                          },
-                          items: <String>['Título', 'Autor', 'Mais novos'].map<DropdownMenuItem<String>>((String value) {
-                            return DropdownMenuItem<String>(
-                              value: value,
-                              child: Text(value),
-
-                            );
-                          }).toList(),
-                        ),*/ /*
-                      ],
-                    )),*/
                 SliverGrid.count(
                     crossAxisCount: 3,
-                    children: this
-                        .audios
+                    children: vm.audios
                         .map((Audio audio) => MediaPanel(
                               author: audio.author,
                               isFavorite: false,
@@ -265,7 +233,8 @@ class _HomeState extends State<Home> {
                           ),
                           TextButton(
                             onPressed: () {
-                              FocusScopeNode currentFocus = FocusScope.of(context);
+                              FocusScopeNode currentFocus =
+                                  FocusScope.of(context);
 
                               if (!currentFocus.hasPrimaryFocus) {
                                 currentFocus.unfocus();

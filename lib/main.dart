@@ -1,5 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/foundation.dart';
+
+import 'package:provider/provider.dart';
 import 'package:medo_e_delirio_app/screens/home.dart';
+import 'package:medo_e_delirio_app/viewModels/audio_list_view_model.dart';
 
 void main() {
   runApp(MyApp());
@@ -22,7 +26,10 @@ class MyApp extends StatelessWidget {
         ),
       ),
       debugShowCheckedModeBanner: false,
-      home: Home(),
+      home: ChangeNotifierProvider(
+        create: (context) => AudioListViewModel(),
+        child: Home(),
+      ),
     );
   }
 }
