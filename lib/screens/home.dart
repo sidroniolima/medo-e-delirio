@@ -21,8 +21,8 @@ class _HomeState extends State<Home> {
   AudioPlayer audioPlayer;
   int actualIdPlayind = -1;
   bool opened = false;
-  List<Audio> audios = Audio.inserts;
-  String order = 'Descrição';
+  List<Audio> audios = Audio.inserts.reversed.toList();
+  String order = 'Mais recentes';
   String search = '';
   final searchController = TextEditingController();
 
@@ -245,7 +245,7 @@ class _HomeState extends State<Home> {
                               this.setState(() {
                                 this.search = '';
                                 this.searchController.clear();
-                                this.order = 'Descrição';
+                                this.order = 'Mais recentes';
                                 this.audios = Audio.inserts;
                                 this.opened = false;
                               });
