@@ -4,7 +4,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:audioplayers/audioplayers.dart';
 import 'package:http/http.dart';
-import 'package:esys_flutter_share/esys_flutter_share.dart';
 import 'package:medo_e_delirio_app/models/audio.dart';
 import 'package:medo_e_delirio_app/widgets/media_panel.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -94,9 +93,9 @@ class _HomeState extends State<Home> {
                                     });
 
                                     Uint8List bytes = await readBytes(
-                                        'https://sidroniolima.com.br/med/mp3/${audio.fileName}');
-                                    await Share.file('Sound', audio.fileName,
-                                        bytes.buffer.asUint8List(), 'audio/*');
+                                        Uri(path: 'https://sidroniolima.com.br/med/mp3/${audio.fileName}'));
+                                    // await Share.file('Sound', audio.fileName,
+                                    //     bytes.buffer.asUint8List(), 'audio/*');
 
                                     setState(() {
                                       this.actualIdPlayind = -1;
@@ -108,7 +107,7 @@ class _HomeState extends State<Home> {
                                     });
 
                                     Uint8List bytes = await readBytes(
-                                        'https://sidroniolima.com.br/med/mp3/${audio.fileName}');
+                                        Uri(path: 'https://sidroniolima.com.br/med/mp3/${audio.fileName}'));
 
                                     audioPlayer.setVolume(1.0);
                                     await audioPlayer.playBytes(bytes);

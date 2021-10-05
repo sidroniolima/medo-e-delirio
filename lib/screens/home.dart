@@ -1,14 +1,12 @@
 import 'dart:typed_data';
-
+import 'package:just_audio/just_audio.dart';
+import 'package:esys_flutter_share/esys_flutter_share.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:audioplayers/audioplayers.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:http/http.dart';
-import 'package:esys_flutter_share/esys_flutter_share.dart';
 import 'package:medo_e_delirio_app/models/audio.dart';
 import 'package:medo_e_delirio_app/widgets/media_panel.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 import '../models/audio.dart';
 
@@ -130,10 +128,11 @@ class _HomeState extends State<Home> {
                                   this.actualIdPlayind = audio.id;
                                 });
 
-                                Uint8List bytes = await readBytes(
-                                    'https://sidroniolima.com.br/med/mp3/${audio.fileName}');
-                                await Share.file('Sound', audio.fileName,
-                                    bytes.buffer.asUint8List(), 'audio/*');
+                                Uint8List bytes = await readBytes(Uri.https(
+                                    'sidroniolima.com.br',
+                                    '/med/mp3/${audio.fileName}'));
+                                await Share.file(audio.label, audio.fileName,
+                                    bytes, '*/audio');
 
                                 setState(() {
                                   this.actualIdPlayind = -1;
@@ -144,11 +143,13 @@ class _HomeState extends State<Home> {
                                   this.actualIdPlayind = audio.id;
                                 });
 
-                                Uint8List bytes = await readBytes(
-                                    'https://sidroniolima.com.br/med/mp3/${audio.fileName}');
+                                /*Uint8List bytes = await readBytes(Uri.https(
+                                    'sidroniolima.com.br',
+                                    '/med/mp3/${audio.fileName}'));*/
 
                                 audioPlayer.setVolume(1.0);
-                                await audioPlayer.playBytes(bytes);
+                                audioPlayer.setUrl('https://sidroniolima.com.br/med/mp3/${audio.fileName}');
+                                await audioPlayer.play();
 
                                 setState(() {
                                   this.actualIdPlayind = -1;
@@ -265,7 +266,8 @@ class _HomeState extends State<Home> {
                           ),
                           TextButton(
                             onPressed: () {
-                              FocusScopeNode currentFocus = FocusScope.of(context);
+                              FocusScopeNode currentFocus =
+                                  FocusScope.of(context);
 
                               if (!currentFocus.hasPrimaryFocus) {
                                 currentFocus.unfocus();
