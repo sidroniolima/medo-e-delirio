@@ -56,8 +56,8 @@ class MediaPanel extends StatelessWidget {
                 ? Align(
                     alignment: Alignment.bottomCenter,
                     child: Container(
-                      width: screenSize.height * 0.025,
-                      height: screenSize.height * 0.025,
+                      width: screenSize.height * 0.015,
+                      height: screenSize.height * 0.015,
                       child: Center(
                         child: CircularProgressIndicator(
                           valueColor: AlwaysStoppedAnimation<Color>(

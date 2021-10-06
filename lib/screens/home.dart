@@ -148,7 +148,8 @@ class _HomeState extends State<Home> {
                                     '/med/mp3/${audio.fileName}'));*/
 
                                 audioPlayer.setVolume(1.0);
-                                audioPlayer.setUrl('https://sidroniolima.com.br/med/mp3/${audio.fileName}');
+                                audioPlayer.setUrl(
+                                    'https://sidroniolima.com.br/med/mp3/${audio.fileName}');
                                 await audioPlayer.play();
 
                                 setState(() {
@@ -186,6 +187,7 @@ class _HomeState extends State<Home> {
                   padding: const EdgeInsets.symmetric(
                       vertical: 16.0, horizontal: 12.0),
                   child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
                       SizedBox(
                         height: 16.0,
@@ -332,14 +334,32 @@ class _HomeState extends State<Home> {
                             size: 32,
                           ),
                           Container(
-                              width: screenSize.width * .8,
-                              child: Text(
-                                'Toque no Card para ouvir e mantenha pressionado para compartilhar.',
-                                style: TextStyle(
-                                    fontSize: 14.0, color: Color(0XFF243119)),
-                              ))
+                            width: screenSize.width * .8,
+                            child: Text(
+                              'Toque no Card para ouvir e mantenha pressionado para compartilhar.',
+                              style: TextStyle(
+                                  fontSize: 14.0, color: Color(0XFF243119)),
+                            ),
+                          ),
                         ],
                       ),
+                      SizedBox(
+                        height: screenSize.height * 0.05,
+                      ),
+                      Text(
+                        'Versão: 1.5.9, A.K.A. pqp_marquinho',
+                        style:
+                            TextStyle(fontSize: 12.0, color: Colors.yellowAccent),
+                      ),
+                      SizedBox(
+                        height: screenSize.height * 0.01,
+                      ),
+                      Text(
+                        'Pague um café ao desenvolvedor\nPIX 10171295765',
+                        textAlign: TextAlign.center,
+                        style:
+                        TextStyle(fontSize: 12.0, color: Colors.yellowAccent, ),
+                      )
                     ],
                   ),
                 ),
