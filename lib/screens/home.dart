@@ -347,7 +347,7 @@ class _HomeState extends State<Home> {
                         height: screenSize.height * 0.05,
                       ),
                       Text(
-                        'Versão: 1.6.1, A.K.A. google_bad_words',
+                        'Versão: 1.6.2, A.K.A. wishes',
                         style:
                             TextStyle(fontSize: 12.0, color: Colors.yellowAccent),
                       ),
@@ -355,15 +355,15 @@ class _HomeState extends State<Home> {
                         height: screenSize.height * 0.01,
                       ),
                       Text(
-                        'Pague um café ao desenvolvedor. PIX',
+                        'Pague uma cerveja ao desenvolvedor. PIX',
                         textAlign: TextAlign.center,
                         style:
-                        TextStyle(fontSize: 12.0, color: Colors.yellowAccent, ),
+                        TextStyle(fontSize: 13.0, color: Colors.yellowAccent, ),
                       ),
                       SelectableText('10171295765',
                         textAlign: TextAlign.center,
                         style:
-                        TextStyle(fontSize: 12.0, color: Colors.yellowAccent, ),)
+                        TextStyle(fontSize: 13.0, color: Colors.yellowAccent, ),)
                     ],
                   ),
                 ),
