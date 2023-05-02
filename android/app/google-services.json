@@ -1,0 +1,46 @@
+{
+  "project_info": {
+    "project_number": "508156996930",
+    "project_id": "medo-e-delirio",
+    "storage_bucket": "medo-e-delirio.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:508156996930:android:f51d57b2f51fd73e18ecdb",
+        "android_client_info": {
+          "package_name": "br.com.sidroniolima.medo_e_delirio_app"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "508156996930-kqetg75jb2uke29bo3o2an2s8l8sgn1v.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBVm6sHaslsZsrHfTa4pu025w-Q5h2ptWA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "508156996930-kqetg75jb2uke29bo3o2an2s8l8sgn1v.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "508156996930-oeqlit32k6lglgj8jmki4nc6cjsiu7g6.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "br.com.sidroniolima.medoEDelirioApp"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
