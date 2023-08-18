@@ -4,7 +4,6 @@ import 'dart:typed_data';
 import 'package:http/http.dart';
 import 'package:just_audio/just_audio.dart';
 import 'package:path_provider/path_provider.dart';
-import 'package:share_plus/share_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:medo_e_delirio_app/models/audio.dart';
@@ -12,7 +11,6 @@ import 'package:medo_e_delirio_app/widgets/media_panel.dart';
 
 import '../color_palette.dart';
 import '../exceptions/custom_firebase_messaging_exception.dart';
-import '../models/audio.dart';
 import '../services/topic_subscription_service.dart';
 
 class Home extends StatefulWidget {
@@ -29,7 +27,8 @@ class _HomeState extends State<Home> {
   String search = '';
   final searchController = TextEditingController();
 
-  final TopicSubscriptionService subscriptionService = TopicSubscriptionService();
+  final TopicSubscriptionService subscriptionService =
+      TopicSubscriptionService();
 
   @override
   void initState() {
@@ -67,9 +66,8 @@ class _HomeState extends State<Home> {
             default:
               if (snapshot.hasError) {
                 if (snapshot.error is CustomFirebaseMessagingException) {
-
-                  ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(content: Text('Error')));
+                  ScaffoldMessenger.of(context)
+                      .showSnackBar(SnackBar(content: Text('Error')));
                 }
                 return Center(
                     child: Text('Problema. Tente novamente em instantes.'));
@@ -139,8 +137,8 @@ class _HomeState extends State<Home> {
 
                                         File(path).writeAsBytesSync(bytes);
 
-                                        await Share.shareFiles([path],
-                                            mimeTypes: ['audio/mpeg']);
+                                        /*await Share.shareFiles([path],
+                                            mimeTypes: ['audio/mpeg']);*/
 
                                         setState(() {
                                           this.actualIdPlayind = -1;
@@ -227,7 +225,7 @@ class _HomeState extends State<Home> {
                                 labelText: 'Ordenação',
                                 labelStyle: Theme.of(context)
                                     .primaryTextTheme
-                                    .caption
+                                    .bodySmall
                                     ?.copyWith(
                                         color: Color(0XFF243119),
                                         fontSize: screenSize.height * 0.025),
@@ -288,7 +286,7 @@ class _HomeState extends State<Home> {
                                   },
                                   child: Text('limpar'),
                                   style: OutlinedButton.styleFrom(
-                                      primary: Color(0XFF243119),
+                                      foregroundColor: Color(0XFF243119),
                                       side: BorderSide(
                                           width: 1, color: Color(0XFF243119)),
                                       backgroundColor: Colors.transparent,
@@ -354,7 +352,7 @@ class _HomeState extends State<Home> {
                                   },
                                   child: Text('filtrar'),
                                   style: TextButton.styleFrom(
-                                      primary: Colors.yellow,
+                                      foregroundColor: Colors.yellow,
                                       backgroundColor: Color(0XFF243119),
                                       textStyle: TextStyle(
                                         fontSize: screenSize.height * 0.02,

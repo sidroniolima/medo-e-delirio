@@ -1,6 +1,5 @@
 import 'dart:async';
 
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:medo_e_delirio_app/screens/home/home_model.dart';
 
 import '../../models/audio.dart';

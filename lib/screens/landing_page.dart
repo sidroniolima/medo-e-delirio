@@ -1,12 +1,10 @@
 import 'dart:convert';
-import 'dart:io';
 import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:http/http.dart';
 import 'package:medo_e_delirio_app/screens/home_screen_bloc.dart';
-import 'package:path_provider/path_provider.dart';
 import '../models/audio.dart';
 import '../widgets/default_error_message.dart';
 import '../widgets/default_progress_indicator.dart';

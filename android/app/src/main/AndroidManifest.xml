@@ -11,7 +11,7 @@
     <application
         android:name="${applicationName}"
         android:label="Medo e Delírio"
-        android:icon="@mipmap/ic_launcher">
+        android:icon="@mipmap/ic_launcher"
         android:usesCleartextTraffic="true">
         <activity
             android:exported="true"

@@ -1,8 +1,6 @@
 import 'dart:io';
 import 'dart:typed_data';
 
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:http/http.dart';
@@ -14,7 +12,6 @@ import 'package:medo_e_delirio_app/widgets/default_progress_indicator.dart';
 import 'package:medo_e_delirio_app/widgets/media_panel.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:provider/provider.dart';
-import 'package:share_plus/share_plus.dart';
 
 import '../color_palette.dart';
 import '../models/audio.dart';
@@ -155,8 +152,9 @@ class _HomeScreenBlocState extends State<HomeScreenBloc> {
                             }
                           },
                           decoration: InputDecoration(
-                            labelStyle:
-                                TextStyle(color: ColorPalette.secondary, fontSize: _screenSize.width * .04),
+                            labelStyle: TextStyle(
+                                color: ColorPalette.secondary,
+                                fontSize: _screenSize.width * .04),
                             hintStyle: TextStyle(color: ColorPalette.secondary),
                             hintText: 'autor ou descrição',
                             labelText: 'digite sua pesquisa',
@@ -196,8 +194,8 @@ class _HomeScreenBlocState extends State<HomeScreenBloc> {
 
                               File(path).writeAsBytesSync(bytes);
 
-                              await Share.shareFiles([path],
-                                  mimeTypes: ['audio/mpeg']);
+                              /*await Share.shareFiles([path],
+                                  mimeTypes: ['audio/mpeg']);*/
 
                               setState(() {
                                 //this.actualIdPlayind = -1;
