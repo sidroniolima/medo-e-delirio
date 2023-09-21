@@ -10,12 +10,13 @@ import '../widgets/default_error_message.dart';
 import '../widgets/default_progress_indicator.dart';
 
 class LandingPage extends StatelessWidget {
+  const LandingPage({super.key});
+
   Future<List<Audio>> _init() async {
     List<Audio> audios = [];
 
-    Uint8List bytes = await readBytes(Uri.https(
-        'sidroniolima.com.br',
-        '/med/audios.json'));
+    Uint8List bytes =
+        await readBytes(Uri.https('sidroniolima.com.br', '/med/audios.json'));
 
     final data = await jsonDecode(utf8.decode(bytes));
 

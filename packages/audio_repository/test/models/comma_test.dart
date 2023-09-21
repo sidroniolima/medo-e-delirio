@@ -19,10 +19,10 @@ void main() {
                 .having((w) => w.id, 'id', 1126)
                 .having((w) => w.fileName, 'fileName', 'lula-passarinhos.mpga')
                 .having((w) => w.author, 'author', 'Lula')
-                .having((w) => w.createdAt, 'createdAt',
+                .having((w) => w.date, 'date',
                     DateTime.parse('2023-07-12T00:00:00.000'))
                 .having((w) => w.label, 'label', 'Ó o passarim cantando')
-                .having((w) => w.words, 'words', null)
+                .having((w) => w.words, 'words', '')
                 .having((w) => w.type, 'type', 'INSERT'));
       });
     });

@@ -1,4 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="custom_opening_green">#629460</color>
+    <color name="bgColor">#629460</color>
 </resources>

@@ -24,12 +24,13 @@ class MediaPanel extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: () { this.onPress(); },
-      onLongPress: () { this.onLongPress(); }, // this.onLongPress,
+      onTap: () {
+        this.onPress();
+      },
+      onLongPress: () {
+        this.onLongPress();
+      }, // this.onLongPress,
       child: Container(
-        margin: EdgeInsets.symmetric(
-            vertical: screenSize.width * .01,
-            horizontal: screenSize.width * .01),
         padding: EdgeInsets.all(screenSize.width * .02),
         width: screenSize.width * .35,
         height: screenSize.height * .1,
