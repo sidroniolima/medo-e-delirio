@@ -12,8 +12,7 @@ Comma _$CommaFromJson(Map<String, dynamic> json) => Comma(
       author: json['author'] as String,
       label: json['label'] as String,
       type: json['type'] as String,
-      date:
-          json['date'] == null ? null : DateTime.parse(json['date'] as String),
+      date: json['date'] as String? ?? '',
       words: json['words'] as String? ?? '',
     );
 
@@ -23,6 +22,6 @@ Map<String, dynamic> _$CommaToJson(Comma instance) => <String, dynamic>{
       'author': instance.author,
       'label': instance.label,
       'type': instance.type,
-      'date': instance.date.toIso8601String(),
+      'date': instance.date,
       'words': instance.words,
     };

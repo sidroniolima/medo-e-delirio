@@ -31,7 +31,7 @@ void main() {
           author: 'Lula',
           label: 'Ó o passarim cantando',
           type: 'INSERT',
-          date: DateTime.parse('2023-07-12T00:00:00.000')),
+          date: '2023-07-12T00:00:00.000'),
       Comma(
           id: 1127,
           fileName: 'xo_drogado.mpga',
@@ -39,7 +39,7 @@ void main() {
           label: 'Xô drogado',
           type: 'INSERT',
           words: 'xo drogrado',
-          date: DateTime.parse('2022-01-31T00:00:00.000')),
+          date: '2022-01-31T00:00:00.000'),
     ];
 
     setUpAll(() {
@@ -89,7 +89,7 @@ void main() {
               label: 'Sai, Alexandre de Moraes',
               type: 'INSERT',
               words: 'xandao',
-              date: DateTime.parse('2023-01-31T00:00:00.000'));
+              date: '2023-01-31T00:00:00.000');
 
           await subject.favoriteComma(finalToFavorite);
 
@@ -160,24 +160,22 @@ void main() {
         final List<Comma> actual = await subject.fetchCommas();
 
         expect(
-            actual.elementAt(0),
+            actual.elementAt(1),
             isA<Comma>()
                 .having((w) => w.id, "id", 1126)
                 .having((w) => w.fileName, "fileName", "lula-passarinhos.mpga")
                 .having((w) => w.author, "author", "Lula")
-                .having((w) => w.date, "createdAt",
-                    DateTime.parse("2023-07-12T00:00:00.000"))
+                .having((w) => w.date, "createdAt", "2023-07-12T00:00:00.000")
                 .having((w) => w.label, "label", "Ó o passarim cantando")
                 .having((w) => w.words, "words", '')
                 .having((w) => w.type, "type", "INSERT"));
         expect(
-            actual.elementAt(1),
+            actual.elementAt(0),
             isA<Comma>()
                 .having((w) => w.id, "id", 1127)
                 .having((w) => w.fileName, "fileName", "defante_do_neida.mpga")
                 .having((w) => w.author, "author", "Defante")
-                .having((w) => w.date, "createdAt",
-                    DateTime.parse("2023-07-20T00:00:00.000"))
+                .having((w) => w.date, "createdAt", "2023-07-20T00:00:00.000")
                 .having((w) => w.label, "label", "Do neida")
                 .having((w) => w.words, "words", "defante kuduro do neida")
                 .having((w) => w.type, "type", "INSERT"));

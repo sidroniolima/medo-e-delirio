@@ -35,13 +35,15 @@ class AudioJsonApi extends AudioApi {
   Future<List<Comma>> fetchCommas() async {
     final commasRequest = Uri.https(_baseUrlCommas, '/med/audios.json');
 
-    final commasResponse = await _httpClient.get(commasRequest);
+    final commasResponse = await _httpClient
+        .get(commasRequest, headers: {'content-type': 'application/json'});
 
     if (commasResponse.statusCode != 200) {
       throw CommasRequestFailure();
     }
 
-    final commasJson = jsonDecode(commasResponse.body) as List;
+    final commasJson =
+        jsonDecode(utf8.decode(commasResponse.bodyBytes)) as List;
 
     if (commasJson.isEmpty) return [];
 

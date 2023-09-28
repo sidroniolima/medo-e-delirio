@@ -14,6 +14,7 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
     on<HomeFetchAllRequested>(_onHomeFetchAllRequested);
     on<HomeFetchFavoritesRequested>(_onHomeFetchFavoritesRequested);
     on<HomeFavorited>(_onHomeFavorited);
+    on<HomeShowPlayerRequested>(_onHomeShowPlayerRequested);
   }
 
   final AudioRepository _audioRepository;
@@ -54,5 +55,10 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
     } on Exception {
       emit(state.copyWith(status: HomeStatus.failure));
     }
+  }
+
+  Future<void> _onHomeShowPlayerRequested(
+      HomeShowPlayerRequested event, Emitter<HomeState> emit) async {
+    emit(state.copyWith(showPlayer: true, ));
   }
 }

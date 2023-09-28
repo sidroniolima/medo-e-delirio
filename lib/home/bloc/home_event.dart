@@ -15,4 +15,16 @@ final class HomeFavorited extends HomeEvent {
   final Comma comma;
 
   HomeFavorited({required this.comma});
+
+  @override
+  List<Object> get props => [comma];
+}
+
+final class HomeShowPlayerRequested extends HomeEvent {
+  final Comma comma;
+
+  HomeShowPlayerRequested({required this.comma});
+
+  @override
+  List<Object> get props => [comma];
 }

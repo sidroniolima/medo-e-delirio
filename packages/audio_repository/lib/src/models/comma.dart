@@ -13,19 +13,21 @@ class Comma extends Equatable {
   final String label;
   final String type;
 
-  final DateTime date;
+  final String date;
 
   final String? words;
 
-  Comma(
+  const Comma(
       {required this.id,
       required this.fileName,
       required this.author,
       required this.label,
       required this.type,
-      DateTime? date,
-      this.words = ''})
-      : this.date = date ?? DateTime.now();
+      this.date = '',
+      this.words = ''});
+
+  static const empty =
+      Comma(author: '', label: '', type: '', words: '', id: -1, fileName: '');
 
   static Comma fromJson(Map<String, dynamic> json) => _$CommaFromJson(json);
   Map<String, dynamic> toJson() => _$CommaToJson(this);

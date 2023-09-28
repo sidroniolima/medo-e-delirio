@@ -12,14 +12,21 @@ extension HomeStatusX on HomeStatus {
 final class HomeState extends Equatable {
   final List<Comma> commas;
   final HomeStatus status;
+  final bool showPlayer;
 
-  const HomeState({this.commas = const [], this.status = HomeStatus.initial});
+  const HomeState(
+      {this.commas = const [],
+      this.status = HomeStatus.initial,
+      this.showPlayer = false});
 
-  HomeState copyWith({List<Comma>? commas, HomeStatus? status}) {
+  HomeState copyWith(
+      {List<Comma>? commas, HomeStatus? status, bool? showPlayer}) {
     return HomeState(
-        commas: commas ?? this.commas, status: status ?? this.status);
+        commas: commas ?? this.commas,
+        status: status ?? this.status,
+        showPlayer: showPlayer ?? this.showPlayer);
   }
 
   @override
-  List<Object> get props => [commas, status];
+  List<Object> get props => [commas, status, showPlayer];
 }
