@@ -14,6 +14,7 @@ class PlayerCubit extends Cubit<PlayerState> {
 
   void play(Comma audio) async {
     try {
+      _player.playerState;
       emit(state.copyWith(audio: audio, status: PlayerStatus.loading));
       await _player
           .setUrl('https://sidroniolima.com.br/med/mp3/${audio.fileName}');
