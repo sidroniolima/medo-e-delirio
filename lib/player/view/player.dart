@@ -28,9 +28,20 @@ class Player extends StatelessWidget {
                     style: TextStyle(color: Colors.white, fontSize: 16.0),
                   ),
                   IconButton.filled(
-                    onPressed: () => context.read<PlayerCubit>().playSelected(),
+                    onPressed: () {
+                      switch (state.status) {
+                        case PlayerStatus.loading:
+                          context.read<PlayerCubit>().playSelected();
+                        case PlayerStatus.playing:
+                          context.read<PlayerCubit>().playSelected();
+                        default:
+                          break;
+                      }
+                    },
                     icon: Icon(
-                      FontAwesomeIcons.play,
+                      state.status == PlayerStatus.playing
+                          ? FontAwesomeIcons.pause
+                          : FontAwesomeIcons.play,
                       color: Colors.white,
                       size: 32.0,
                     ),
