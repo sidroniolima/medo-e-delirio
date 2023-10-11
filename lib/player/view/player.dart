@@ -21,9 +21,64 @@ class Player extends StatelessWidget {
         child: BlocBuilder<PlayerCubit, PlayerState>(
           builder: (context, state) {
             return Column(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                Text(
+                  state.audio.label,
+                  style: TextStyle(color: Colors.white, fontSize: 16.0),
+                ),
+                Column(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      ...switch (state.status) {
+                        PlayerStatus.playing => [
+                            IconButton.filled(
+                              onPressed: () {
+                                context.read<PlayerCubit>().pause();
+                              },
+                              icon: Icon(
+                                FontAwesomeIcons.pause,
+                                color: Colors.white,
+                                size: 32.0,
+                              ),
+                            ),
+                          ],
+                        PlayerStatus.loading => [
+                            CircularProgressIndicator(
+                              strokeWidth: 1.0,
+                              color: ColorPalette.primary,
+                              valueColor: AlwaysStoppedAnimation<Color>(
+                                  ColorPalette.secondary),
+                            )
+                          ],
+                        _ => [
+                            IconButton.filled(
+                              onPressed: () async {
+                                await context
+                                    .read<PlayerCubit>()
+                                    .play(state.audio);
+                              },
+                              icon: Icon(
+                                FontAwesomeIcons.play,
+                                color: Colors.white,
+                                size: 32.0,
+                              ),
+                            ),
+                          ]
+                      }
+                    ]),
+              ],
+            );
+          },
+        ),
+      ),
+    );
+  }
+}
+
+/*
+
+Text(
                     state.audio.label,
                     style: TextStyle(color: Colors.white, fontSize: 16.0),
                   ),
@@ -45,11 +100,4 @@ class Player extends StatelessWidget {
                       color: Colors.white,
                       size: 32.0,
                     ),
-                  )
-                ]);
-          },
-        ),
-      ),
-    );
-  }
-}
+                  )*/

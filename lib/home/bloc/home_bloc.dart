@@ -59,6 +59,8 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
 
   Future<void> _onHomeShowPlayerRequested(
       HomeShowPlayerRequested event, Emitter<HomeState> emit) async {
-    emit(state.copyWith(showPlayer: true, ));
+    emit(state.copyWith(
+      showPlayer: true,
+    ));
   }
 }
