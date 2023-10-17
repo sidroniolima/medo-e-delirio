@@ -9,7 +9,6 @@ class MediaPanel extends StatelessWidget {
     required this.author,
     required this.isFavorite,
     required this.favoriteAction,
-    required this.onLongPress,
   });
 
   final Function onPress;
@@ -18,7 +17,6 @@ class MediaPanel extends StatelessWidget {
   final String author;
   final bool isPlaying;
   final bool isFavorite;
-  final Function onLongPress;
   final Function favoriteAction;
 
   @override
@@ -27,9 +25,6 @@ class MediaPanel extends StatelessWidget {
       onTap: () {
         this.onPress();
       },
-      onLongPress: () {
-        this.onLongPress();
-      }, // this.onLongPress,
       child: Container(
         padding: EdgeInsets.all(screenSize.width * .02),
         width: screenSize.width * .35,
@@ -71,17 +66,7 @@ class MediaPanel extends StatelessWidget {
                 style: TextStyle(
                     fontSize: screenSize.width * .032, color: Colors.yellow),
               ),
-            ),
-
-            /*GestureDetector(
-                  child: FaIcon(
-                    this.isFavorite
-                        ? FontAwesomeIcons.solidStar
-                        : FontAwesomeIcons.star,
-                    size: screenSize.height * 0.020,
-                    color: Colors.white,
-                  ),
-                  onTap: this.favoriteAction),*/
+            )
           ],
         ),
       ),

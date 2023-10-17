@@ -10,5 +10,4 @@ class Player {
   void play(Audio audio) {
     print('Playind audio ${audio.label}...');
   }
-  
 }

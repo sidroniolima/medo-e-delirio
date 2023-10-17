@@ -1,5 +1,6 @@
 import 'package:audio_repository/audio_repository.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:medo_e_delirio_app/color_palette.dart';
@@ -35,6 +36,12 @@ class HomePageView extends StatelessWidget {
         backgroundColor: ColorPalette.secondary,
         elevation: 0.0,
         toolbarHeight: 120.0,
+        flexibleSpace: FlexibleSpaceBar(
+          background: Image.asset(
+            'assets/images/med_full_logo.png',
+            fit: BoxFit.fitHeight,
+          ),
+        ),
       ),
       body: Padding(
         padding: const EdgeInsets.symmetric(vertical: 12.0, horizontal: 08.0),
@@ -61,16 +68,50 @@ class HomePageView extends StatelessWidget {
                                     .read<HomeBloc>()
                                     .add(HomeFetchAllRequested()),
                                 label: 'Audios'),
-                            _buildActionButton(
+                            /*_buildActionButton(
                                 action: () => context
                                     .read<HomeBloc>()
                                     .add(HomeFetchAllRequested()),
-                                label: 'Recentes'),
+                                label: 'Recentes'),*/
                             _buildActionButton(
                                 action: () => context
                                     .read<HomeBloc>()
                                     .add(HomeFetchFavoritesRequested()),
                                 label: 'Favoritos'),
+                            _buildActionButton(
+                                action: () async {
+                                  await Clipboard.setData(ClipboardData(
+                                    text:
+                                        '77d6aecd-f99f-45a3-8852-9d9b91de1f9d',
+                                  )).then((value) => {
+                                        ScaffoldMessenger.of(context)
+                                          ..hideCurrentSnackBar()
+                                          ..showSnackBar(
+                                            SnackBar(
+                                              content: Center(
+                                                child: Text(
+                                                  'Chave PIX copiada, boca de leite!',
+                                                  style: TextStyle(
+                                                      color: Colors.white,
+                                                      fontSize: 16),
+                                                ),
+                                              ),
+                                              backgroundColor:
+                                                  ColorPalette.primary,
+                                              elevation: 0,
+                                              shape: RoundedRectangleBorder(
+                                                borderRadius: BorderRadius.only(
+                                                    topLeft:
+                                                        Radius.circular(08),
+                                                    topRight:
+                                                        Radius.circular(08)),
+                                              ),
+                                            ),
+                                          ),
+                                      });
+                                },
+                                label: 'Doar por PIX',
+                                color: ColorPalette.tertiary)
                           ]),
                       SizedBox(
                         height: 8.0,
@@ -87,11 +128,12 @@ class HomePageView extends StatelessWidget {
                             return MediaPanel(
                               author: comma.author,
                               isFavorite: false,
-                              favoriteAction: () {},
+                              favoriteAction: () {
+                                context
+                                    .read<HomeBloc>()
+                                    .add(HomeFavorited(comma: comma));
+                              },
                               isPlaying: false,
-                              onLongPress: () => context
-                                  .read<HomeBloc>()
-                                  .add(HomeFavorited(comma: comma)),
                               onPress: () {
                                 context
                                     .read<HomeBloc>()
@@ -119,7 +161,8 @@ class HomePageView extends StatelessWidget {
     );
   }
 
-  _buildActionButton({required Function() action, required String label}) {
+  _buildActionButton(
+      {required Function() action, required String label, Color? color}) {
     return TextButton(
       onPressed: action,
       child: Text(
@@ -130,7 +173,7 @@ class HomePageView extends StatelessWidget {
         ),
       ),
       style: TextButton.styleFrom(
-        backgroundColor: ColorPalette.secondary,
+        backgroundColor: color ?? ColorPalette.secondary,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(12),
         ),

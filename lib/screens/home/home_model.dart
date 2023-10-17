@@ -6,9 +6,17 @@ class HomeModel {
   final List<Audio> audiosOriginalList;
   final String search;
 
-  HomeModel({this.isLoading = false, this.audios = const [], this.search = '', this.audiosOriginalList = const []});
+  HomeModel(
+      {this.isLoading = false,
+      this.audios = const [],
+      this.search = '',
+      this.audiosOriginalList = const []});
 
-  HomeModel copyWith({bool? isLoading, List<Audio>? audios, String? search, List<Audio>? audiosOriginalList}) {
+  HomeModel copyWith(
+      {bool? isLoading,
+      List<Audio>? audios,
+      String? search,
+      List<Audio>? audiosOriginalList}) {
     return HomeModel(
         isLoading: isLoading ?? this.isLoading,
         audios: audios ?? this.audios,

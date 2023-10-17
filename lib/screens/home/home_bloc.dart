@@ -42,13 +42,10 @@ class HomeBloc {
   }
 
   Future<void> search(String search) async {
-    this._updateWith(
-        isLoading: true,
-        search: search);
+    this._updateWith(isLoading: true, search: search);
 
     if (this._model.audios.isEmpty) {
-      this._updateWith(
-          audios: [...this._model.audiosOriginalList]);
+      this._updateWith(audios: [...this._model.audiosOriginalList]);
     }
 
     List<Audio> originals = [...this._model.audiosOriginalList];

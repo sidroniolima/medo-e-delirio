@@ -28,10 +28,6 @@ class PlayerCubit extends Cubit<PlayerState> {
         await _player.play();
       }
 
-      emit.forach(_player.playerStateStream, onData: (playerState) => 
-      state.copyWith(status: playerState);
-      );
-
       _player.playerStateStream.listen((playerState) {
         if (playerState.processingState == ProcessingState.completed) {
           emit(state.copyWith(status: PlayerStatus.stopped));
