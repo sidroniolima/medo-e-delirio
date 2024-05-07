@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:medo_e_delirio_app/color_palette.dart';
 
 class MediaPanel extends StatelessWidget {
   const MediaPanel({
@@ -30,43 +32,63 @@ class MediaPanel extends StatelessWidget {
         width: screenSize.width * .35,
         height: screenSize.height * .1,
         decoration: BoxDecoration(
-            color: Color(0XFF629460), borderRadius: BorderRadius.circular(8.0)),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.start,
+            color: ColorPalette.secondary,
+            borderRadius: BorderRadius.circular(8.0)),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceAround,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(
-              this.label,
-              overflow: TextOverflow.clip,
-              style: TextStyle(
-                  fontSize: screenSize.width * .036, color: Colors.white),
-            ),
-            isPlaying
-                ? Align(
-                    alignment: Alignment.center,
-                    child: Container(
-                      width: screenSize.height * 0.015,
-                      height: screenSize.height * 0.015,
-                      child: Center(
-                        child: CircularProgressIndicator(
-                          valueColor: AlwaysStoppedAnimation<Color>(
-                            Colors.white,
-                          ),
-                          strokeWidth: 1.0,
-                        ),
-                      ),
-                    ))
-                : Container(),
-            Spacer(),
-            Padding(
-              padding: EdgeInsets.only(top: screenSize.width * .02),
-              child: Text(
-                this.author,
-                overflow: TextOverflow.clip,
-                style: TextStyle(
-                    fontSize: screenSize.width * .032, color: Colors.yellow),
+            Expanded(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    this.label,
+                    overflow: TextOverflow.clip,
+                    style: TextStyle(
+                        fontSize: screenSize.width * .036,
+                        color: Colors.white,
+                        fontWeight: FontWeight.w500),
+                  ),
+                  isPlaying
+                      ? Align(
+                          alignment: Alignment.center,
+                          child: Container(
+                            width: screenSize.height * 0.015,
+                            height: screenSize.height * 0.015,
+                            child: Center(
+                              child: CircularProgressIndicator(
+                                valueColor: AlwaysStoppedAnimation<Color>(
+                                  Colors.white,
+                                ),
+                                strokeWidth: 1.0,
+                              ),
+                            ),
+                          ))
+                      : Container(),
+                  Spacer(),
+                  Padding(
+                    padding: EdgeInsets.only(top: screenSize.width * .02),
+                    child: Text(
+                      this.author,
+                      overflow: TextOverflow.clip,
+                      style: TextStyle(
+                          fontSize: screenSize.width * .032,
+                          color: ColorPalette.tertiary,
+                          fontWeight: FontWeight.w500),
+                    ),
+                  )
+                ],
               ),
-            )
+            ),
+            isFavorite
+                ? Icon(
+                    FontAwesomeIcons.solidHeart,
+                    color: ColorPalette.tertiary,
+                    size: 12.0,
+                  )
+                : Container()
           ],
         ),
       ),

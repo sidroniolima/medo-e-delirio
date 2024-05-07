@@ -10,23 +10,35 @@ extension HomeStatusX on HomeStatus {
 }
 
 final class HomeState extends Equatable {
-  final List<Comma> commas;
+  final List<Comma> audios;
   final HomeStatus status;
   final bool showPlayer;
+  final HomeFilter filter;
+  final String query;
 
   const HomeState(
-      {this.commas = const [],
+      {this.audios = const [],
       this.status = HomeStatus.initial,
-      this.showPlayer = false});
+      this.showPlayer = false,
+      this.filter = HomeFilter.all,
+      this.query = ''});
+
+  Iterable<Comma> get filteredAudios => query.applyAll(filter.applyAll(audios));
 
   HomeState copyWith(
-      {List<Comma>? commas, HomeStatus? status, bool? showPlayer}) {
+      {List<Comma>? audios,
+      HomeStatus? status,
+      bool? showPlayer,
+      HomeFilter? filter,
+      String? query}) {
     return HomeState(
-        commas: commas ?? this.commas,
+        audios: audios ?? this.audios,
         status: status ?? this.status,
-        showPlayer: showPlayer ?? this.showPlayer);
+        showPlayer: showPlayer ?? this.showPlayer,
+        filter: filter ?? this.filter,
+        query: query ?? this.query);
   }
 
   @override
-  List<Object> get props => [commas, status, showPlayer];
+  List<Object> get props => [audios, status, showPlayer, filter, query];
 }

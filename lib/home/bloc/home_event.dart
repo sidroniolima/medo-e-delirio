@@ -7,14 +7,30 @@ sealed class HomeEvent extends Equatable {
   List<Object> get props => [];
 }
 
-final class HomeFetchAllRequested extends HomeEvent {}
+final class HomeSubscriptionRequested extends HomeEvent {}
 
-final class HomeFetchFavoritesRequested extends HomeEvent {}
+final class HomeFilterChanged extends HomeEvent {
+  final HomeFilter filter;
 
-final class HomeFavorited extends HomeEvent {
+  HomeFilterChanged({required this.filter});
+
+  @override
+  List<Object> get props => [filter];
+}
+
+final class HomeQueryChanged extends HomeEvent {
+  final String query;
+
+  HomeQueryChanged({required this.query});
+
+  @override
+  List<Object> get props => [query];
+}
+
+final class HomeFavoriteToggled extends HomeEvent {
   final Comma comma;
 
-  HomeFavorited({required this.comma});
+  HomeFavoriteToggled({required this.comma});
 
   @override
   List<Object> get props => [comma];

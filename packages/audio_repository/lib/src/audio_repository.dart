@@ -1,21 +1,30 @@
-import 'package:audio_repository/src/api/audio_api.dart';
-
-import 'models/models.dart';
+import 'package:comma_api/comma_api.dart';
 
 class AudioRepository {
-  final AudioApi _audioApi;
+  final CommaApi _commaApi;
 
-  AudioRepository({required AudioApi audioApi}) : _audioApi = audioApi;
+  AudioRepository({required CommaApi commaApi}) : _commaApi = commaApi;
 
-  Future<List<Comma>> fetchCommas() async {
-    return await _audioApi.fetchCommas();
+  Stream<List<Comma>> getAudios() => _commaApi.getCommas();
+
+  Future<void> fetchCommas(
+      int offset, int resultsForPage, String userId) async {
+    await _commaApi.fetchCommas(0, 0, userId);
   }
 
-  Future<void> favorite(Comma comma) async {
-    return await _audioApi.favoriteComma(comma);
+  Future<void> toggleFavorite(String userId, Comma comma) async {
+    if (comma.favorite) {
+      await this.desfavorite(userId, comma);
+    } else {
+      await this.favorite(userId, comma);
+    }
   }
 
-  Future<List<Comma>> getFavoriteCommas() async {
-    return await _audioApi.getFavoritedCommas();
+  Future<void> favorite(String userId, Comma comma) async {
+    await _commaApi.favorite(userId, comma);
+  }
+
+  Future<void> desfavorite(String userId, Comma comma) async {
+    await _commaApi.desfavorite(userId, comma);
   }
 }

@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:medo_e_delirio_app/color_palette.dart';
-import 'package:medo_e_delirio_app/home/bloc/home_bloc.dart';
 import 'package:medo_e_delirio_app/player/cubit/player_cubit.dart';
 
 class Player extends StatelessWidget {
@@ -11,79 +10,127 @@ class Player extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.all(16.0),
+      padding: const EdgeInsets.symmetric(vertical: 16.0, horizontal: 8.0),
       child: Container(
-        padding: EdgeInsets.all(16.0),
-        height: 120.0,
+        padding: EdgeInsets.all(8.0),
+        height: 100.0,
         width: double.infinity,
         decoration: BoxDecoration(
-            color: Color(0xFF7eb77f), borderRadius: BorderRadius.circular(8.0)),
+            boxShadow: [
+              BoxShadow(
+                  color: ColorPalette.primary,
+                  spreadRadius: 4.0,
+                  blurRadius: 14.0,
+                  offset: Offset(0, 0))
+            ],
+            color: //Color(0xFF7eb77f),
+                ColorPalette.secondary,
+            //ColorPalette.tertiary,
+            //ColorPalette.primary,
+            borderRadius: BorderRadius.circular(8.0)),
         child: BlocBuilder<PlayerCubit, PlayerState>(
           builder: (context, state) {
-            return Column(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            return Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Text(
-                  state.audio.label,
-                  style: TextStyle(color: ColorPalette.primary, fontSize: 16.0),
-                ),
-                Column(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      ...switch (state.status) {
-                        PlayerStatus.playing => [
-                            IconButton.filled(
-                              onPressed: () {
-                                context.read<PlayerCubit>().pause();
-                              },
-                              icon: Icon(
-                                FontAwesomeIcons.pause,
-                                color: ColorPalette.primary,
-                                size: 32.0,
-                              ),
-                            ),
-                          ],
-                        PlayerStatus.loading => [
-                            CircularProgressIndicator(
-                              strokeWidth: 1.0,
-                              color: ColorPalette.primary,
-                              valueColor: AlwaysStoppedAnimation<Color>(
-                                  ColorPalette.secondary),
-                            )
-                          ],
-                        _ => [
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceAround,
-                              children: [
-                                IconButton.filled(
-                                  onPressed: () async {
-                                    await context
-                                        .read<PlayerCubit>()
-                                        .play(state.audio);
-                                  },
-                                  icon: Icon(
-                                    FontAwesomeIcons.play,
-                                    color: ColorPalette.primary,
-                                    size: 28.0,
-                                  ),
-                                ),
-                                IconButton.filled(
-                                  onPressed: () {
-                                    context
-                                        .read<HomeBloc>()
-                                        .add(HomeFavorited(comma: state.audio));
-                                  },
-                                  icon: Icon(
-                                    FontAwesomeIcons.heart,
-                                    color: ColorPalette.primary,
-                                    size: 28.0,
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ]
-                      }
+                ...switch (state.status) {
+                  PlayerStatus.playing => [
+                      InkWell(
+                        onTap: () {
+                          context.read<PlayerCubit>().pause();
+                        },
+                        child: Icon(
+                          FontAwesomeIcons.pause,
+                          color: Colors.white,
+                          size: 28.0,
+                        ),
+                      ),
+                    ],
+                  PlayerStatus.loading => [
+                      SizedBox(
+                        width: 28.0,
+                        height: 28.0,
+                        child: CircularProgressIndicator(
+                          strokeWidth: 2.0,
+                          color: Colors.white,
+                          valueColor:
+                              AlwaysStoppedAnimation<Color>(Colors.white),
+                        ),
+                      )
+                    ],
+                  _ => [
+                      InkWell(
+                        onTap: () async {
+                          await context.read<PlayerCubit>().play(state.audio);
+                        },
+                        child: Icon(
+                          FontAwesomeIcons.play,
+                          color: Colors.white,
+                          size: 28.0,
+                        ),
+                      ),
+                    ]
+                },
+                Container(
+                  width: 210.0,
+                  child: RichText(
+                    text: TextSpan(children: [
+                      TextSpan(
+                          text: state.audio.label,
+                          style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 16.0,
+                              fontWeight: FontWeight.bold)),
+                      TextSpan(
+                          text: '\n${state.audio.author}',
+                          style:
+                              TextStyle(color: Colors.white, fontSize: 14.0)),
                     ]),
+                  ),
+                ),
+                InkWell(
+                  onTap: () {
+                    context.read<PlayerCubit>().toggleFavorite('', state.audio);
+                  },
+                  child: Icon(
+                    state.audio.favorite
+                        ? FontAwesomeIcons.solidHeart
+                        : FontAwesomeIcons.heart,
+                    color: Colors.white,
+                    size: 28.0,
+                  ),
+                ),
+                state.status == PlayerStatus.sharing
+                    ? SizedBox(
+                        width: 28.0,
+                        height: 28.0,
+                        child: CircularProgressIndicator(
+                          strokeWidth: 2.0,
+                          color: Colors.white,
+                          valueColor:
+                              AlwaysStoppedAnimation<Color>(Colors.white),
+                        ),
+                      )
+                    : InkWell(
+                        onTap: () async {
+                          await context.read<PlayerCubit>().shareSelected();
+                        },
+                        child: Icon(
+                          FontAwesomeIcons.shareNodes,
+                          color: Colors.white,
+                          size: 28.0,
+                        ),
+                      ),
+                /*InkWell(
+                  onTap: () {
+                    context.read<PlayerCubit>().generateVideoBytes();
+                  },
+                  child: Icon(
+                    FontAwesomeIcons.video,
+                    color: ColorPalette.primary,
+                    size: 28.0,
+                  ),
+                ),*/
               ],
             );
           },
@@ -115,6 +162,6 @@ Text(
                           ? FontAwesomeIcons.pause
                           : FontAwesomeIcons.play,
                       color: Colors.white,
-                      size: 32.0,
+                      size: 28.0,
                     ),
                   )*/

@@ -1,6 +1,16 @@
 part of 'player_cubit.dart';
 
-enum PlayerStatus { loading, playing, paused, resumed, stopped, crashed }
+enum PlayerStatus {
+  loading,
+  playing,
+  paused,
+  resumed,
+  stopped,
+  crashed,
+  shared,
+  sharing,
+  coverting
+}
 
 final class PlayerState extends Equatable {
   const PlayerState(
@@ -13,7 +23,10 @@ final class PlayerState extends Equatable {
   final PlayerStatus status;
 
   PlayerState copyWith(
-      {Duration? duration, Comma? audio, PlayerStatus? status}) {
+      {Duration? duration,
+      Comma? audio,
+      PlayerStatus? status,
+      bool? favorite}) {
     return PlayerState(
         duration: duration ?? this.duration,
         status: status ?? this.status,

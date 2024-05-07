@@ -2,6 +2,7 @@ import 'package:audio_repository/audio_repository.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
+import 'package:local_storage_comma_api/local_storage_comma_api.dart';
 import 'package:medo_e_delirio_app/bootstrap.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'firebase_options.dart';
@@ -22,7 +23,10 @@ void main() async {
     options: DefaultFirebaseOptions.currentPlatform,
   );
 
-  final audioApi = AudioJsonApi(plugin: await SharedPreferences.getInstance());
+  LocalStorageCommaApiFactory apiFactory = LocalStorageCommaApiFactory();
 
-  bootstrap(audioApi: audioApi);
+  final commaApi =
+      await apiFactory.initiate(plugin: await SharedPreferences.getInstance());
+
+  bootstrap(commaApi: commaApi);
 }
