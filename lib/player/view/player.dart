@@ -121,6 +121,29 @@ class Player extends StatelessWidget {
                           size: 28.0,
                         ),
                       ),
+                state.status == PlayerStatus.sharingVideo
+                    ? SizedBox(
+                        width: 28.0,
+                        height: 28.0,
+                        child: CircularProgressIndicator(
+                          strokeWidth: 2.0,
+                          color: Colors.white,
+                          valueColor:
+                              AlwaysStoppedAnimation<Color>(Colors.white),
+                        ),
+                      )
+                    : InkWell(
+                        onTap: () async {
+                          await context
+                              .read<PlayerCubit>()
+                              .shareVideoForSelected();
+                        },
+                        child: Icon(
+                          FontAwesomeIcons.fileVideo,
+                          color: Colors.white,
+                          size: 28.0,
+                        ),
+                      ),
                 /*InkWell(
                   onTap: () {
                     context.read<PlayerCubit>().generateVideoBytes();

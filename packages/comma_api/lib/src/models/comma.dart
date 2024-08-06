@@ -37,15 +37,16 @@ class Comma extends Equatable {
       this.words = '',
       this.favorite = false});
 
-  Comma copyWith(
-      {int? id,
-      String? fileName,
-      String? author,
-      String? label,
-      String? type,
-      String? date,
-      String? words,
-      bool? favorite}) {
+  Comma copyWith({
+    int? id,
+    String? fileName,
+    String? author,
+    String? label,
+    String? type,
+    String? date,
+    String? words,
+    bool? favorite,
+  }) {
     return Comma(
         id: id ?? this.id,
         fileName: fileName ?? this.fileName,

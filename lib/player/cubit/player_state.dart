@@ -9,7 +9,7 @@ enum PlayerStatus {
   crashed,
   shared,
   sharing,
-  coverting
+  sharingVideo
 }
 
 final class PlayerState extends Equatable {

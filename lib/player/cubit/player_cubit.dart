@@ -107,4 +107,29 @@ class PlayerCubit extends Cubit<PlayerState> {
       emit(state.copyWith(status: PlayerStatus.crashed));
     }
   }
+
+  Future<void> shareVideoForSelected() async {
+    try {
+      emit(state.copyWith(status: PlayerStatus.sharingVideo));
+
+      final fileNameLastIndex = state.audio.fileName.lastIndexOf(".");
+      final videoFileName =
+          '${state.audio.fileName.substring(0, fileNameLastIndex)}.mp4';
+
+      Uint8List bytes = await http.readBytes(
+          Uri.https('sidroniolima.com.br', '/med/mp4/$videoFileName'));
+
+      final temp = await getTemporaryDirectory();
+
+      final path = '${temp.path}/$videoFileName';
+
+      File(path).writeAsBytesSync(bytes);
+
+      await Share.shareXFiles([XFile(path)]);
+
+      emit(state.copyWith(status: PlayerStatus.shared));
+    } catch (_) {
+      emit(state.copyWith(status: PlayerStatus.crashed));
+    }
+  }
 }
