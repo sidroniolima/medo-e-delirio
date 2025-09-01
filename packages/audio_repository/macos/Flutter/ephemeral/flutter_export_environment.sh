@@ -1,7 +1,7 @@
 #!/bin/sh
 # This is a generated file; do not edit or check into version control.
 export "FLUTTER_ROOT=/home/sidronio/flutter"
-export "FLUTTER_APPLICATION_PATH=/home/sidronio/junk/medo_e_delirio_app/audio_repository"
+export "FLUTTER_APPLICATION_PATH=/home/sidronio/junk/medo_e_delirio_app/packages/audio_repository"
 export "COCOAPODS_PARALLEL_CODE_SIGN=true"
 export "FLUTTER_BUILD_DIR=build"
 export "FLUTTER_BUILD_NAME=0.0.1"

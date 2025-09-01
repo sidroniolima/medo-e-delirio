@@ -10,8 +10,13 @@ buildCustomAppBar(BuildContext context, CustbomBarActionType actionType) =>
       elevation: 0.0,
       toolbarHeight: 132.0,
       flexibleSpace: FlexibleSpaceBar(
-        background: Image.asset(
+        /*background: Image.asset(
           'assets/images/logo_sem_bozo.png',
+          fit: BoxFit.fitWidth,
+        ),*/
+        background: FadeInImage(
+          image: NetworkImage('https://sidroniolima.com.br/med/banner_app.png'),
+          placeholder: AssetImage('assets/images/logo_sem_bozo.png'),
           fit: BoxFit.fitWidth,
         ),
       ),

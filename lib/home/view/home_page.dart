@@ -8,7 +8,6 @@ import 'package:medo_e_delirio_app/color_palette.dart';
 import 'package:medo_e_delirio_app/home_tab/cubit/home_tab_cubit.dart';
 import 'package:medo_e_delirio_app/player/cubit/player_cubit.dart';
 import 'package:medo_e_delirio_app/player/view/player.dart';
-import 'package:url_launcher/url_launcher.dart';
 
 import '../../widgets/widgets.dart';
 import '../bloc/home_bloc.dart';

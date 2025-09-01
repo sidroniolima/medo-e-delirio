@@ -1,6 +1,7 @@
-import 'package:audio_repository/audio_repository.dart';
+import 'dart:developer' as developer;
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:local_storage_comma_api/local_storage_comma_api.dart';
 import 'package:medo_e_delirio_app/bootstrap.dart';
@@ -11,6 +12,7 @@ import 'firebase_options.dart';
 //https://romannurik.github.io/AndroidAssetStudio/icons-launcher.html#foreground.type=clipart&foreground.clipart=outlined_flag&foreground.space.trim=1&foreground.space.pad=0.25&foreColor=rgb(98%2C%20148%2C%2096)&backColor=rgb(36%2C%2049%2C%2025)&crop=0&backgroundShape=circle&effects=none&name=notification_icon
 
 Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
+  print(message.notification!.body);
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
 }
 
@@ -22,6 +24,14 @@ void main() async {
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
+
+  final firebaseInstance = await FirebaseMessaging.instance;
+  final fcmToken = await firebaseInstance.getToken();
+
+  if (kDebugMode) {
+    developer.log('Entering debug mode...', name: 'lib.main');
+    developer.log('FirebaseMessaging - the token is $fcmToken.');
+  }
 
   LocalStorageCommaApiFactory apiFactory = LocalStorageCommaApiFactory();
 
