@@ -10,7 +10,7 @@ class Player extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 16.0, horizontal: 8.0),
+      padding: const EdgeInsets.symmetric(vertical: 16.0, horizontal: 6),
       child: Container(
         padding: EdgeInsets.all(8.0),
         height: 100.0,
@@ -18,9 +18,9 @@ class Player extends StatelessWidget {
         decoration: BoxDecoration(
             boxShadow: [
               BoxShadow(
-                  color: ColorPalette.primary,
-                  spreadRadius: 4.0,
-                  blurRadius: 14.0,
+                  color: ColorPalette.primary.withOpacity(0.7),
+                  spreadRadius: 2.0,
+                  blurRadius: 6.0,
                   offset: Offset(0, 0))
             ],
             color: //Color(0xFF7eb77f),

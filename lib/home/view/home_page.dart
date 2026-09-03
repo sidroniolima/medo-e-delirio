@@ -41,132 +41,136 @@ class HomePageView extends StatelessWidget {
   Widget build(BuildContext context) {
     final selectedTab = context.select((HomeTabCubit cubit) => cubit.state.tab);
 
-    return Scaffold(
-      appBar: buildCustomAppBar(context, CustbomBarActionType.home),
-      body: Padding(
-        padding: const EdgeInsets.only(top: 12.0, left: 08.0, right: 8.0),
-        child: Center(
-          child: BlocBuilder<HomeBloc, HomeState>(builder: (context, state) {
-            switch (state.status) {
-              case HomeStatus.initial:
-                return Container();
-              case HomeStatus.loading:
-                return DefaultProgressIndicator(message: 'Carregando...');
-              case HomeStatus.failure:
-                return DefaultErrorMessage(action: () => {});
-              case HomeStatus.success:
-                return Stack(children: [
-                  Column(
-                    children: [
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          _buildActionButton(
-                              value: HomeTab.all,
-                              groupValue: selectedTab,
-                              action: () {
-                                context
-                                    .read<HomeTabCubit>()
-                                    .setTab(HomeTab.all);
+    return SafeArea(
+      child: Scaffold(
+        appBar: buildCustomAppBar(context, CustbomBarActionType.home),
+        body: Padding(
+          padding: const EdgeInsets.only(top: 12.0, left: 08.0, right: 8.0),
+          child: Center(
+            child: BlocBuilder<HomeBloc, HomeState>(builder: (context, state) {
+              switch (state.status) {
+                case HomeStatus.initial:
+                  return Container();
+                case HomeStatus.loading:
+                  return DefaultProgressIndicator(message: 'Carregando...');
+                case HomeStatus.failure:
+                  return DefaultErrorMessage(action: () => {});
+                case HomeStatus.success:
+                  return Stack(children: [
+                    Column(
+                      children: [
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            _buildActionButton(
+                                value: HomeTab.all,
+                                groupValue: selectedTab,
+                                action: () {
+                                  context
+                                      .read<HomeTabCubit>()
+                                      .setTab(HomeTab.all);
 
-                                context.read<HomeBloc>().add(
-                                    HomeFilterChanged(filter: HomeFilter.all));
-                              },
-                              label: 'todos'),
-                          _buildActionButton(
-                              value: HomeTab.favorite,
-                              groupValue: selectedTab,
-                              action: () {
-                                context
-                                    .read<HomeTabCubit>()
-                                    .setTab(HomeTab.favorite);
+                                  context.read<HomeBloc>().add(
+                                      HomeFilterChanged(
+                                          filter: HomeFilter.all));
+                                },
+                                label: 'todos'),
+                            _buildActionButton(
+                                value: HomeTab.favorite,
+                                groupValue: selectedTab,
+                                action: () {
+                                  context
+                                      .read<HomeTabCubit>()
+                                      .setTab(HomeTab.favorite);
 
-                                context.read<HomeBloc>().add(HomeFilterChanged(
-                                    filter: HomeFilter.favorite));
-                              },
-                              label: 'favoritos'),
-                          _buildActionButton(
-                              value: HomeTab.music,
-                              groupValue: selectedTab,
-                              action: () {
-                                context
-                                    .read<HomeTabCubit>()
-                                    .setTab(HomeTab.music);
+                                  context.read<HomeBloc>().add(
+                                      HomeFilterChanged(
+                                          filter: HomeFilter.favorite));
+                                },
+                                label: 'favoritos'),
+                            _buildActionButton(
+                                value: HomeTab.music,
+                                groupValue: selectedTab,
+                                action: () {
+                                  context
+                                      .read<HomeTabCubit>()
+                                      .setTab(HomeTab.music);
 
-                                context.read<HomeBloc>().add(HomeFilterChanged(
-                                    filter: HomeFilter.music));
-                              },
-                              label: 'músicas'),
-                          _buildDonateDialog(context),
-                        ],
-                      ),
-                      SizedBox(
-                        height: 6.0,
-                      ),
-                      TextField(
-                        style: TextStyle(
-                            color: ColorPalette.secondary, fontSize: 14),
-                        onChanged: (value) {
-                          context
-                              .read<HomeBloc>()
-                              .add(HomeQueryChanged(query: value));
-                        },
-                        decoration: InputDecoration(
-                          labelStyle: TextStyle(
-                              color: ColorPalette.secondary, fontSize: 14.0),
-                          hintStyle: TextStyle(color: ColorPalette.secondary),
-                          hintText: 'autor ou descrição',
-                          labelText: 'digite sua pesquisa',
-                          enabledBorder: OutlineInputBorder(
-                              borderSide:
-                                  BorderSide(color: ColorPalette.secondary)),
-                          border: OutlineInputBorder(
-                              borderSide:
-                                  BorderSide(color: ColorPalette.secondary)),
-                          focusedBorder: OutlineInputBorder(
-                              borderSide:
-                                  BorderSide(color: ColorPalette.secondary)),
+                                  context.read<HomeBloc>().add(
+                                      HomeFilterChanged(
+                                          filter: HomeFilter.music));
+                                },
+                                label: 'músicas'),
+                            _buildDonateDialog(context),
+                          ],
                         ),
-                      ),
-                      SizedBox(
-                        height: 12.0,
-                      ),
-                      Expanded(
-                        flex: 1,
-                        child: GridView.count(
-                          padding: EdgeInsets.zero,
-                          crossAxisCount: 3,
-                          shrinkWrap: true,
-                          mainAxisSpacing: 8.0,
-                          crossAxisSpacing: 8.0,
-                          children: state.filteredAudios.map((Comma comma) {
-                            return MediaPanel(
-                              author: comma.author,
-                              isFavorite: comma.favorite,
-                              favoriteAction: () {},
-                              isPlaying: false,
-                              onPress: () {
-                                context
-                                    .read<HomeBloc>()
-                                    .add(HomeShowPlayerRequested(comma: comma));
-
-                                context.read<PlayerCubit>().play(comma);
-                              },
-                              screenSize: MediaQuery.of(context).size,
-                              label: comma.label,
-                            );
-                          }).toList(),
+                        SizedBox(
+                          height: 6.0,
                         ),
-                      ),
-                    ],
-                  ),
-                  state.showPlayer
-                      ? Align(
-                          alignment: Alignment.bottomCenter, child: Player())
-                      : Container(),
-                ]);
-            }
-          }),
+                        TextField(
+                          style: TextStyle(
+                              color: ColorPalette.secondary, fontSize: 14),
+                          onChanged: (value) {
+                            context
+                                .read<HomeBloc>()
+                                .add(HomeQueryChanged(query: value));
+                          },
+                          decoration: InputDecoration(
+                            labelStyle: TextStyle(
+                                color: ColorPalette.secondary, fontSize: 14.0),
+                            hintStyle: TextStyle(color: ColorPalette.secondary),
+                            hintText: 'autor ou descrição',
+                            labelText: 'digite sua pesquisa',
+                            enabledBorder: OutlineInputBorder(
+                                borderSide:
+                                    BorderSide(color: ColorPalette.secondary)),
+                            border: OutlineInputBorder(
+                                borderSide:
+                                    BorderSide(color: ColorPalette.secondary)),
+                            focusedBorder: OutlineInputBorder(
+                                borderSide:
+                                    BorderSide(color: ColorPalette.secondary)),
+                          ),
+                        ),
+                        SizedBox(
+                          height: 12.0,
+                        ),
+                        Expanded(
+                          flex: 1,
+                          child: GridView.count(
+                            padding: EdgeInsets.zero,
+                            crossAxisCount: 3,
+                            shrinkWrap: true,
+                            mainAxisSpacing: 8.0,
+                            crossAxisSpacing: 8.0,
+                            children: state.filteredAudios.map((Comma comma) {
+                              return MediaPanel(
+                                author: comma.author,
+                                isFavorite: comma.favorite,
+                                favoriteAction: () {},
+                                isPlaying: false,
+                                onPress: () {
+                                  context.read<HomeBloc>().add(
+                                      HomeShowPlayerRequested(comma: comma));
+
+                                  context.read<PlayerCubit>().play(comma);
+                                },
+                                screenSize: MediaQuery.of(context).size,
+                                label: comma.label,
+                              );
+                            }).toList(),
+                          ),
+                        ),
+                      ],
+                    ),
+                    state.showPlayer
+                        ? Align(
+                            alignment: Alignment.bottomCenter, child: Player())
+                        : Container(),
+                  ]);
+              }
+            }),
+          ),
         ),
       ),
     );

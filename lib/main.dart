@@ -5,6 +5,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:local_storage_comma_api/local_storage_comma_api.dart';
 import 'package:medo_e_delirio_app/bootstrap.dart';
+import 'package:medo_e_delirio_app/messaging/messaging.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'firebase_options.dart';
 
@@ -12,7 +13,8 @@ import 'firebase_options.dart';
 //https://romannurik.github.io/AndroidAssetStudio/icons-launcher.html#foreground.type=clipart&foreground.clipart=outlined_flag&foreground.space.trim=1&foreground.space.pad=0.25&foreColor=rgb(98%2C%20148%2C%2096)&backColor=rgb(36%2C%2049%2C%2025)&crop=0&backgroundShape=circle&effects=none&name=notification_icon
 
 Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
-  print(message.notification!.body);
+  developer.log('Handling a background message: ${message.messageId}');
+  developer.log(message.notification!.body!);
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
 }
 
@@ -37,6 +39,9 @@ void main() async {
 
   final commaApi =
       await apiFactory.initiate(plugin: await SharedPreferences.getInstance());
+
+  await TokenSubscriber(messaging: await firebaseInstance)
+    ..subscribe(fcmToken);
 
   bootstrap(commaApi: commaApi);
 }
