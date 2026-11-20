@@ -9,6 +9,8 @@ sealed class HomeEvent extends Equatable {
 
 final class HomeSubscriptionRequested extends HomeEvent {}
 
+final class HomeRetryRequested extends HomeEvent {}
+
 final class HomeFilterChanged extends HomeEvent {
   final HomeFilter filter;
 

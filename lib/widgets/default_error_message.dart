@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import '../color_palette.dart';
 
 class DefaultErrorMessage extends StatelessWidget {
-  final Function action;
+  final VoidCallback action;
 
   DefaultErrorMessage({required this.action});
 
@@ -21,7 +21,7 @@ class DefaultErrorMessage extends StatelessWidget {
                 color: ColorPalette.primary),
           ),
           OutlinedButton(
-            onPressed: () => this.action,
+            onPressed: action,
             child: Text('tentar de novo'),
             style: OutlinedButton.styleFrom(
                 foregroundColor: ColorPalette.secondary, side: BorderSide(width: 1, color: ColorPalette.secondary),

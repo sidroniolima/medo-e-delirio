@@ -14,7 +14,7 @@ import 'firebase_options.dart';
 
 Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
   developer.log('Handling a background message: ${message.messageId}');
-  developer.log(message.notification!.body!);
+  developer.log(message.notification?.body ?? '');
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
 }
 

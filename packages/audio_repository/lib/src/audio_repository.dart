@@ -9,7 +9,7 @@ class AudioRepository {
 
   Future<void> fetchCommas(
       int offset, int resultsForPage, String userId) async {
-    await _commaApi.fetchCommas(0, 0, userId);
+    await _commaApi.fetchCommas(offset, resultsForPage, userId);
   }
 
   Future<void> toggleFavorite(String userId, Comma comma) async {

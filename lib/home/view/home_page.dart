@@ -54,7 +54,10 @@ class HomePageView extends StatelessWidget {
                 case HomeStatus.loading:
                   return DefaultProgressIndicator(message: 'Carregando...');
                 case HomeStatus.failure:
-                  return DefaultErrorMessage(action: () => {});
+                  return DefaultErrorMessage(
+                      action: () => context
+                          .read<HomeBloc>()
+                          .add(HomeRetryRequested()));
                 case HomeStatus.success:
                   return Stack(children: [
                     Column(

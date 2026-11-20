@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:io';
 import 'dart:typed_data';
 
@@ -17,10 +18,24 @@ class PlayerCubit extends Cubit<PlayerState> {
   PlayerCubit({required AudioRepository audioRepository, AudioPlayer? player})
       : _player = player ?? AudioPlayer(),
         _audioRepository = audioRepository,
-        super(PlayerState());
+        super(PlayerState()) {
+    _playerStateSubscription = _player.playerStateStream.listen((playerState) {
+      if (playerState.processingState == ProcessingState.completed) {
+        emit(state.copyWith(status: PlayerStatus.stopped));
+      }
+    });
+  }
 
   final AudioPlayer _player;
   final AudioRepository _audioRepository;
+  late final StreamSubscription<dynamic> _playerStateSubscription;
+
+  @override
+  Future<void> close() async {
+    await _playerStateSubscription.cancel();
+    await _player.dispose();
+    return super.close();
+  }
 
   Future<void> toggleFavorite(String userId, Comma comma) async {
     await this._audioRepository.toggleFavorite(userId, comma);
@@ -46,12 +61,6 @@ class PlayerCubit extends Cubit<PlayerState> {
 
         await _player.play();
       }
-
-      _player.playerStateStream.listen((playerState) {
-        if (playerState.processingState == ProcessingState.completed) {
-          emit(state.copyWith(status: PlayerStatus.stopped));
-        }
-      });
     } catch (ex) {
       emit(state.copyWith(status: PlayerStatus.crashed));
     }
