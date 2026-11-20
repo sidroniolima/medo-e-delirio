@@ -2,6 +2,7 @@ import 'package:audio_repository/audio_repository.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:medo_e_delirio_app/@shared/@shared.dart';
 
 import 'package:medo_e_delirio_app/color_palette.dart';
@@ -142,33 +143,7 @@ class HomePageView extends StatelessWidget {
                         ),
                         Expanded(
                           flex: 1,
-                          child: GridView.count(
-                            // Room to scroll the last items above the player.
-                            padding: EdgeInsets.only(
-                                bottom: state.showPlayer
-                                    ? Player.overlayHeight
-                                    : 0.0),
-                            crossAxisCount: 3,
-                            shrinkWrap: true,
-                            mainAxisSpacing: 8.0,
-                            crossAxisSpacing: 8.0,
-                            children: state.filteredAudios.map((Comma comma) {
-                              return MediaPanel(
-                                author: comma.author,
-                                isFavorite: comma.favorite,
-                                favoriteAction: () {},
-                                isPlaying: false,
-                                onPress: () {
-                                  context.read<HomeBloc>().add(
-                                      HomeShowPlayerRequested(comma: comma));
-
-                                  context.read<PlayerCubit>().play(comma);
-                                },
-                                screenSize: MediaQuery.of(context).size,
-                                label: comma.label,
-                              );
-                            }).toList(),
-                          ),
+                          child: _buildAudioList(context, state),
                         ),
                       ],
                     ),
@@ -182,6 +157,55 @@ class HomePageView extends StatelessWidget {
           ),
         ),
       ),
+    );
+  }
+
+  Widget _buildAudioList(BuildContext context, HomeState state) {
+    final player = context.watch<PlayerCubit>().state;
+    final audios = state.filteredAudios.toList();
+
+    if (audios.isEmpty) {
+      return _EmptyMessage(
+        icon: state.query.isNotEmpty
+            ? FontAwesomeIcons.magnifyingGlass
+            : FontAwesomeIcons.heart,
+        message: state.query.isNotEmpty
+            ? 'Nada encontrado para "${state.query}".'
+            : switch (state.filter) {
+                HomeFilter.favorite =>
+                  'Nenhum favorito ainda.\nToque no ♡ do player para favoritar.',
+                _ => 'Nenhum áudio por aqui.',
+              },
+      );
+    }
+
+    return GridView.count(
+      // Room to scroll the last items above the player.
+      padding: EdgeInsets.only(
+          bottom: state.showPlayer ? Player.overlayHeight : 0.0),
+      crossAxisCount: 3,
+      shrinkWrap: true,
+      mainAxisSpacing: 8.0,
+      crossAxisSpacing: 8.0,
+      children: audios.map((Comma comma) {
+        final isCurrent = player.audio.id == comma.id;
+
+        return MediaPanel(
+          author: comma.author,
+          isFavorite: comma.favorite,
+          isMusic: comma.type == 'MUSIC',
+          favoriteAction: () {},
+          isPlaying: isCurrent && player.status == PlayerStatus.playing,
+          isLoading: isCurrent && player.status == PlayerStatus.loading,
+          onPress: () {
+            context.read<HomeBloc>().add(HomeShowPlayerRequested(comma: comma));
+
+            context.read<PlayerCubit>().play(comma);
+          },
+          screenSize: MediaQuery.of(context).size,
+          label: comma.label,
+        );
+      }).toList(),
     );
   }
 
@@ -298,6 +322,34 @@ class HomePageView extends StatelessWidget {
             : ColorPalette.secondary,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(12),
+        ),
+      ),
+    );
+  }
+}
+
+class _EmptyMessage extends StatelessWidget {
+  const _EmptyMessage({required this.icon, required this.message});
+
+  final IconData icon;
+  final String message;
+
+  @override
+  Widget build(BuildContext context) {
+    return Center(
+      child: Padding(
+        padding: const EdgeInsets.all(24.0),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Icon(icon, color: ColorPalette.secondary, size: 32.0),
+            SizedBox(height: 12.0),
+            Text(
+              message,
+              textAlign: TextAlign.center,
+              style: TextStyle(color: Colors.white70, fontSize: 15.0),
+            ),
+          ],
         ),
       ),
     );
