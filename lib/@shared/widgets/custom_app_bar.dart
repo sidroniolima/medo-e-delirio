@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:medo_e_delirio_app/about/about.dart';
 import 'package:medo_e_delirio_app/color_palette.dart';
 
@@ -8,16 +9,27 @@ buildCustomAppBar(BuildContext context, CustbomBarActionType actionType) =>
     AppBar(
       backgroundColor: ColorPalette.secondary,
       elevation: 0.0,
+      // No Material 3 tint when the list scrolls under, so the status bar
+      // keeps the same green as the banner.
+      scrolledUnderElevation: 0.0,
+      surfaceTintColor: Colors.transparent,
       toolbarHeight: 132.0,
-      flexibleSpace: FlexibleSpaceBar(
-        /*background: Image.asset(
+      // White status bar icons over the green bar.
+      systemOverlayStyle: SystemUiOverlayStyle.light,
+      // Keeps the banner below the status bar instead of under it.
+      flexibleSpace: SafeArea(
+        bottom: false,
+        child: FlexibleSpaceBar(
+          /*background: Image.asset(
           'assets/images/logo_sem_bozo.png',
           fit: BoxFit.fitWidth,
         ),*/
-        background: FadeInImage(
-          image: NetworkImage('https://sidroniolima.com.br/med/banner_app.png'),
-          placeholder: AssetImage('assets/images/logo_sem_bozo.png'),
-          fit: BoxFit.fitWidth,
+          background: FadeInImage(
+            image:
+                NetworkImage('https://sidroniolima.com.br/med/banner_app.png'),
+            placeholder: AssetImage('assets/images/logo_sem_bozo.png'),
+            fit: BoxFit.fitWidth,
+          ),
         ),
       ),
       actions: [

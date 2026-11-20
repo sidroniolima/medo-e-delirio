@@ -41,10 +41,13 @@ class HomePageView extends StatelessWidget {
   Widget build(BuildContext context) {
     final selectedTab = context.select((HomeTabCubit cubit) => cubit.state.tab);
 
-    return SafeArea(
-      child: Scaffold(
-        appBar: buildCustomAppBar(context, CustbomBarActionType.home),
-        body: Padding(
+    // The AppBar paints behind the status bar (edge-to-edge since target SDK
+    // 35), so SafeArea only guards the bottom navigation bar.
+    return Scaffold(
+      appBar: buildCustomAppBar(context, CustbomBarActionType.home),
+      body: SafeArea(
+        top: false,
+        child: Padding(
           padding: const EdgeInsets.only(top: 12.0, left: 08.0, right: 8.0),
           child: Center(
             child: BlocBuilder<HomeBloc, HomeState>(builder: (context, state) {
@@ -55,9 +58,8 @@ class HomePageView extends StatelessWidget {
                   return DefaultProgressIndicator(message: 'Carregando...');
                 case HomeStatus.failure:
                   return DefaultErrorMessage(
-                      action: () => context
-                          .read<HomeBloc>()
-                          .add(HomeRetryRequested()));
+                      action: () =>
+                          context.read<HomeBloc>().add(HomeRetryRequested()));
                 case HomeStatus.success:
                   return Stack(children: [
                     Column(
@@ -141,7 +143,11 @@ class HomePageView extends StatelessWidget {
                         Expanded(
                           flex: 1,
                           child: GridView.count(
-                            padding: EdgeInsets.zero,
+                            // Room to scroll the last items above the player.
+                            padding: EdgeInsets.only(
+                                bottom: state.showPlayer
+                                    ? Player.overlayHeight
+                                    : 0.0),
                             crossAxisCount: 3,
                             shrinkWrap: true,
                             mainAxisSpacing: 8.0,

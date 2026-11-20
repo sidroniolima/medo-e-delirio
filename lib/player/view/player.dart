@@ -7,13 +7,19 @@ import 'package:medo_e_delirio_app/player/cubit/player_cubit.dart';
 class Player extends StatelessWidget {
   const Player({super.key});
 
+  static const double _height = 100.0;
+  static const double _verticalPadding = 16.0;
+
+  /// Total height the player covers over the content behind it.
+  static const double overlayHeight = _height + _verticalPadding * 2;
+
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 16.0, horizontal: 6),
+      padding: const EdgeInsets.symmetric(vertical: _verticalPadding),
       child: Container(
         padding: EdgeInsets.all(8.0),
-        height: 100.0,
+        height: _height,
         width: double.infinity,
         decoration: BoxDecoration(
             boxShadow: [
