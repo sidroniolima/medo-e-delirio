@@ -1,12 +1,10 @@
 import 'package:audio_repository/audio_repository.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:medo_e_delirio_app/@shared/@shared.dart';
 
 import 'package:medo_e_delirio_app/color_palette.dart';
-import 'package:medo_e_delirio_app/home_tab/cubit/home_tab_cubit.dart';
 import 'package:medo_e_delirio_app/player/cubit/player_cubit.dart';
 import 'package:medo_e_delirio_app/player/view/player.dart';
 
@@ -28,9 +26,6 @@ class HomePage extends StatelessWidget {
       BlocProvider(
           create: (context) =>
               PlayerCubit(audioRepository: context.read<AudioRepository>())),
-      BlocProvider(
-        create: (context) => HomeTabCubit(),
-      ),
     ], child: HomePageView());
   }
 }
@@ -40,8 +35,6 @@ class HomePageView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final selectedTab = context.select((HomeTabCubit cubit) => cubit.state.tab);
-
     // The AppBar paints behind the status bar (edge-to-edge since target SDK
     // 35), so SafeArea only guards the bottom navigation bar.
     return Scaffold(
@@ -65,79 +58,11 @@ class HomePageView extends StatelessWidget {
                   return Stack(children: [
                     Column(
                       children: [
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            _buildActionButton(
-                                value: HomeTab.all,
-                                groupValue: selectedTab,
-                                action: () {
-                                  context
-                                      .read<HomeTabCubit>()
-                                      .setTab(HomeTab.all);
-
-                                  context.read<HomeBloc>().add(
-                                      HomeFilterChanged(
-                                          filter: HomeFilter.all));
-                                },
-                                label: 'todos'),
-                            _buildActionButton(
-                                value: HomeTab.favorite,
-                                groupValue: selectedTab,
-                                action: () {
-                                  context
-                                      .read<HomeTabCubit>()
-                                      .setTab(HomeTab.favorite);
-
-                                  context.read<HomeBloc>().add(
-                                      HomeFilterChanged(
-                                          filter: HomeFilter.favorite));
-                                },
-                                label: 'favoritos'),
-                            _buildActionButton(
-                                value: HomeTab.music,
-                                groupValue: selectedTab,
-                                action: () {
-                                  context
-                                      .read<HomeTabCubit>()
-                                      .setTab(HomeTab.music);
-
-                                  context.read<HomeBloc>().add(
-                                      HomeFilterChanged(
-                                          filter: HomeFilter.music));
-                                },
-                                label: 'músicas'),
-                            _buildDonateDialog(context),
-                          ],
-                        ),
+                        _FilterChips(state: state),
                         SizedBox(
                           height: 6.0,
                         ),
-                        TextField(
-                          style: TextStyle(
-                              color: ColorPalette.secondary, fontSize: 14),
-                          onChanged: (value) {
-                            context
-                                .read<HomeBloc>()
-                                .add(HomeQueryChanged(query: value));
-                          },
-                          decoration: InputDecoration(
-                            labelStyle: TextStyle(
-                                color: ColorPalette.secondary, fontSize: 14.0),
-                            hintStyle: TextStyle(color: ColorPalette.secondary),
-                            hintText: 'autor ou descrição',
-                            labelText: 'digite sua pesquisa',
-                            enabledBorder: OutlineInputBorder(
-                                borderSide:
-                                    BorderSide(color: ColorPalette.secondary)),
-                            border: OutlineInputBorder(
-                                borderSide:
-                                    BorderSide(color: ColorPalette.secondary)),
-                            focusedBorder: OutlineInputBorder(
-                                borderSide:
-                                    BorderSide(color: ColorPalette.secondary)),
-                          ),
-                        ),
+                        _SearchField(),
                         SizedBox(
                           height: 12.0,
                         ),
@@ -208,124 +133,6 @@ class HomePageView extends StatelessWidget {
       }).toList(),
     );
   }
-
-  TextButton _buildDonateDialog(BuildContext context) {
-    return TextButton(
-      onPressed: () async {
-        showDialog(
-            context: context,
-            builder: (context) {
-              return AlertDialog(
-                backgroundColor: ColorPalette.secondary,
-                title: Text(
-                  'Contribua para o APP',
-                  style: TextStyle(fontSize: 14.0, color: ColorPalette.primary),
-                ),
-                alignment: Alignment.center,
-                content: RichText(
-                  text: TextSpan(
-                      text: 'Este aplicativo é uma criação ',
-                      style: TextStyle(color: ColorPalette.primary),
-                      children: [
-                        TextSpan(
-                            text: 'independente',
-                            style: TextStyle(fontWeight: FontWeight.bold)),
-                        TextSpan(text: ' e autorizada pela equipe do '),
-                        TextSpan(
-                            text: 'Medo e Delírio',
-                            style: TextStyle(fontWeight: FontWeight.bold)),
-                        TextSpan(text: '.'),
-                        TextSpan(text: '\n\nSe você puder e quiser apoiar '),
-                        TextSpan(
-                            text: 'o desenvolvimento e a manutenção ',
-                            style: TextStyle(fontWeight: FontWeight.bold)),
-                        TextSpan(text: ' dele, '),
-                        TextSpan(
-                            text:
-                                'copie a chave PIX abaixo, abra seu aplicativo bancário e contribua com a quantia desejada.'),
-                        TextSpan(
-                            text: '\n\n\Thank you!',
-                            style: TextStyle(fontWeight: FontWeight.bold)),
-                      ]),
-                ),
-                actions: [
-                  TextButton(
-                    style: TextButton.styleFrom(
-                      backgroundColor: ColorPalette.primary,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(12),
-                      ),
-                    ),
-                    onPressed: () {
-                      Navigator.of(context).pop();
-                    },
-                    child: Text(
-                      'doação é o caralh*',
-                      style: TextStyle(color: Colors.white),
-                    ),
-                  ),
-                  TextButton(
-                    style: TextButton.styleFrom(
-                      backgroundColor: ColorPalette.tertiary,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(12),
-                      ),
-                    ),
-                    onPressed: () async {
-                      await Clipboard.setData(ClipboardData(
-                        text: '77d6aecd-f99f-45a3-8852-9d9b91de1f9d',
-                      ));
-                    },
-                    child: Text(
-                      'copiar chave PIX',
-                      style: TextStyle(color: ColorPalette.primary),
-                    ),
-                  ),
-                ],
-              );
-            });
-      },
-      child: Text(
-        'contribua',
-        style: TextStyle(
-          color: ColorPalette.tertiary,
-          fontSize: 16.0,
-        ),
-      ),
-      style: TextButton.styleFrom(
-        backgroundColor: ColorPalette.primary,
-        shape: RoundedRectangleBorder(
-          side: BorderSide(color: ColorPalette.tertiary),
-          borderRadius: BorderRadius.circular(12),
-        ),
-      ),
-    );
-  }
-
-  _buildActionButton(
-      {required HomeTab value,
-      required HomeTab groupValue,
-      required Function() action,
-      required String label}) {
-    return TextButton(
-      onPressed: action,
-      child: Text(
-        label,
-        style: TextStyle(
-          color: ColorPalette.primary,
-          fontSize: 16.0,
-        ),
-      ),
-      style: TextButton.styleFrom(
-        backgroundColor: (value == groupValue)
-            ? ColorPalette.tertiary
-            : ColorPalette.secondary,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(12),
-        ),
-      ),
-    );
-  }
 }
 
 class _EmptyMessage extends StatelessWidget {
@@ -350,6 +157,115 @@ class _EmptyMessage extends StatelessWidget {
               style: TextStyle(color: Colors.white70, fontSize: 15.0),
             ),
           ],
+        ),
+      ),
+    );
+  }
+}
+
+class _FilterChips extends StatelessWidget {
+  const _FilterChips({required this.state});
+
+  final HomeState state;
+
+  static const _labels = {
+    HomeFilter.all: 'todos',
+    HomeFilter.favorite: 'favoritos',
+    HomeFilter.music: 'músicas',
+  };
+
+  @override
+  Widget build(BuildContext context) {
+    return SingleChildScrollView(
+      scrollDirection: Axis.horizontal,
+      child: Row(
+        children: [
+          for (final filter in HomeFilter.values)
+            Padding(
+              padding: const EdgeInsets.only(right: 8.0),
+              child: ChoiceChip(
+                label: Text(
+                    '${_labels[filter]}  ${filter.applyAll(state.audios).length}'),
+                selected: state.filter == filter,
+                showCheckmark: false,
+                onSelected: (_) => context
+                    .read<HomeBloc>()
+                    .add(HomeFilterChanged(filter: filter)),
+                labelStyle: TextStyle(
+                  fontFamily: 'Montserrat',
+                  color: ColorPalette.primary,
+                  fontSize: 15.0,
+                  fontWeight: state.filter == filter
+                      ? FontWeight.bold
+                      : FontWeight.w500,
+                ),
+                backgroundColor: ColorPalette.secondary,
+                selectedColor: ColorPalette.tertiary,
+                side: BorderSide.none,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(12),
+                ),
+              ),
+            ),
+        ],
+      ),
+    );
+  }
+}
+
+class _SearchField extends StatefulWidget {
+  const _SearchField();
+
+  @override
+  State<_SearchField> createState() => _SearchFieldState();
+}
+
+class _SearchFieldState extends State<_SearchField> {
+  final _controller = TextEditingController();
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  void _onChanged(String value) {
+    setState(() {});
+    context.read<HomeBloc>().add(HomeQueryChanged(query: value));
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return TextField(
+      controller: _controller,
+      onChanged: _onChanged,
+      textInputAction: TextInputAction.search,
+      style: TextStyle(color: Colors.white, fontSize: 15.0),
+      decoration: InputDecoration(
+        isDense: true,
+        filled: true,
+        fillColor: ColorPalette.secondary.withValues(alpha: 0.25),
+        hintText: 'buscar por autor ou descrição',
+        hintStyle: TextStyle(color: Colors.white60, fontSize: 15.0),
+        prefixIcon:
+            Icon(Icons.search, color: ColorPalette.secondary, size: 22.0),
+        suffixIcon: _controller.text.isEmpty
+            ? null
+            : IconButton(
+                tooltip: 'limpar busca',
+                icon: Icon(Icons.close, color: Colors.white70, size: 20.0),
+                onPressed: () {
+                  _controller.clear();
+                  _onChanged('');
+                },
+              ),
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(12),
+          borderSide: BorderSide.none,
+        ),
+        focusedBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(12),
+          borderSide: BorderSide(color: ColorPalette.secondary),
         ),
       ),
     );

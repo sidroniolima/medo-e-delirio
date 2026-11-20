@@ -2,6 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:medo_e_delirio_app/about/about.dart';
 import 'package:medo_e_delirio_app/color_palette.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+
+import 'donate_dialog.dart';
 
 enum CustbomBarActionType { about, home }
 
@@ -33,6 +36,19 @@ buildCustomAppBar(BuildContext context, CustbomBarActionType actionType) =>
         ),
       ),
       actions: [
+        if (actionType == CustbomBarActionType.home)
+          Container(
+            margin: EdgeInsets.only(right: 8),
+            decoration: BoxDecoration(
+                color: ColorPalette.primary, shape: BoxShape.circle),
+            child: IconButton(
+              tooltip: 'contribua',
+              onPressed: () => showDonateDialog(context),
+              icon: Icon(FontAwesomeIcons.handHoldingHeart,
+                  color: ColorPalette.tertiary, size: 22),
+              highlightColor: ColorPalette.primary,
+            ),
+          ),
         Container(
           margin: EdgeInsets.only(top: 0, right: 8),
           decoration: BoxDecoration(
