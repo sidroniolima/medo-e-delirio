@@ -35,54 +35,77 @@ class HomePageView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // The AppBar paints behind the status bar (edge-to-edge since target SDK
-    // 35), so SafeArea only guards the bottom navigation bar.
+    // A single scroll view: the banner collapses, filters and search stay
+    // pinned below it and only the grid scrolls under them.
     return Scaffold(
-      appBar: buildCustomAppBar(context, CustbomBarActionType.home),
-      body: SafeArea(
-        top: false,
-        child: Padding(
-          padding: const EdgeInsets.only(top: 12.0, left: 08.0, right: 8.0),
-          child: Center(
-            child: BlocBuilder<HomeBloc, HomeState>(builder: (context, state) {
-              switch (state.status) {
-                case HomeStatus.initial:
-                  return Container();
-                case HomeStatus.loading:
-                  return DefaultProgressIndicator(message: 'Carregando...');
-                case HomeStatus.failure:
-                  return DefaultErrorMessage(
-                      action: () =>
-                          context.read<HomeBloc>().add(HomeRetryRequested()));
-                case HomeStatus.success:
-                  return Stack(children: [
-                    Column(
-                      children: [
-                        _FilterChips(state: state),
-                        SizedBox(
-                          height: 6.0,
-                        ),
-                        _SearchField(),
-                        SizedBox(
-                          height: 12.0,
-                        ),
-                        Expanded(
-                          flex: 1,
-                          child: _buildAudioList(context, state),
-                        ),
-                      ],
-                    ),
-                    state.showPlayer
-                        ? Align(
-                            alignment: Alignment.bottomCenter, child: Player())
-                        : Container(),
-                  ]);
-              }
-            }),
-          ),
-        ),
-      ),
+      body: BlocBuilder<HomeBloc, HomeState>(builder: (context, state) {
+        return Stack(
+          children: [
+            CustomScrollView(
+              slivers: [
+                buildCustomSliverAppBar(context, CustbomBarActionType.home),
+                ..._buildContent(context, state),
+              ],
+            ),
+            if (state.status == HomeStatus.success && state.showPlayer)
+              Align(
+                alignment: Alignment.bottomCenter,
+                // The SafeArea keeps the player above the navigation bar.
+                child: SafeArea(
+                  top: false,
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                    child: Player(),
+                  ),
+                ),
+              ),
+          ],
+        );
+      }),
     );
+  }
+
+  List<Widget> _buildContent(BuildContext context, HomeState state) {
+    switch (state.status) {
+      case HomeStatus.initial:
+        return [];
+      case HomeStatus.loading:
+        return [
+          SliverFillRemaining(
+            hasScrollBody: false,
+            child: DefaultProgressIndicator(message: 'Carregando...'),
+          )
+        ];
+      case HomeStatus.failure:
+        return [
+          SliverFillRemaining(
+            hasScrollBody: false,
+            child: DefaultErrorMessage(
+                action: () =>
+                    context.read<HomeBloc>().add(HomeRetryRequested())),
+          )
+        ];
+      case HomeStatus.success:
+        return [
+          // Sized by its own content, so it adapts to font scale and device.
+          PinnedHeaderSliver(
+            child: Container(
+              // Opaque, so the grid scrolling under it doesn't show through.
+              color: ColorPalette.primary,
+              padding: const EdgeInsets.fromLTRB(8.0, 12.0, 8.0, 12.0),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  _FilterChips(state: state),
+                  SizedBox(height: 6.0),
+                  _SearchField(),
+                ],
+              ),
+            ),
+          ),
+          _buildAudioList(context, state),
+        ];
+    }
   }
 
   Widget _buildAudioList(BuildContext context, HomeState state) {
@@ -90,47 +113,57 @@ class HomePageView extends StatelessWidget {
     final audios = state.filteredAudios.toList();
 
     if (audios.isEmpty) {
-      return _EmptyMessage(
-        icon: state.query.isNotEmpty
-            ? FontAwesomeIcons.magnifyingGlass
-            : FontAwesomeIcons.heart,
-        message: state.query.isNotEmpty
-            ? 'Nada encontrado para "${state.query}".'
-            : switch (state.filter) {
-                HomeFilter.favorite =>
-                  'Nenhum favorito ainda.\nToque no ♡ do player para favoritar.',
-                _ => 'Nenhum áudio por aqui.',
-              },
+      return SliverFillRemaining(
+        hasScrollBody: false,
+        child: _EmptyMessage(
+          icon: state.query.isNotEmpty
+              ? FontAwesomeIcons.magnifyingGlass
+              : FontAwesomeIcons.heart,
+          message: state.query.isNotEmpty
+              ? 'Nada encontrado para "${state.query}".'
+              : switch (state.filter) {
+                  HomeFilter.favorite =>
+                    'Nenhum favorito ainda.\nToque no ♡ do player para favoritar.',
+                  _ => 'Nenhum áudio por aqui.',
+                },
+        ),
       );
     }
 
-    return GridView.count(
-      // Room to scroll the last items above the player.
-      padding: EdgeInsets.only(
-          bottom: state.showPlayer ? Player.overlayHeight : 0.0),
-      crossAxisCount: 3,
-      shrinkWrap: true,
-      mainAxisSpacing: 8.0,
-      crossAxisSpacing: 8.0,
-      children: audios.map((Comma comma) {
-        final isCurrent = player.audio.id == comma.id;
+    return SliverPadding(
+      // Room to scroll the last items above the player and the navigation bar.
+      padding: EdgeInsets.fromLTRB(
+          8.0,
+          0.0,
+          8.0,
+          MediaQuery.paddingOf(context).bottom +
+              (state.showPlayer ? Player.overlayHeight : 8.0)),
+      sliver: SliverGrid.count(
+        crossAxisCount: 3,
+        mainAxisSpacing: 8.0,
+        crossAxisSpacing: 8.0,
+        children: audios.map((Comma comma) {
+          final isCurrent = player.audio.id == comma.id;
 
-        return MediaPanel(
-          author: comma.author,
-          isFavorite: comma.favorite,
-          isMusic: comma.type == 'MUSIC',
-          favoriteAction: () {},
-          isPlaying: isCurrent && player.status == PlayerStatus.playing,
-          isLoading: isCurrent && player.status == PlayerStatus.loading,
-          onPress: () {
-            context.read<HomeBloc>().add(HomeShowPlayerRequested(comma: comma));
+          return MediaPanel(
+            author: comma.author,
+            isFavorite: comma.favorite,
+            isMusic: comma.type == 'MUSIC',
+            favoriteAction: () {},
+            isPlaying: isCurrent && player.status == PlayerStatus.playing,
+            isLoading: isCurrent && player.status == PlayerStatus.loading,
+            onPress: () {
+              context
+                  .read<HomeBloc>()
+                  .add(HomeShowPlayerRequested(comma: comma));
 
-            context.read<PlayerCubit>().play(comma);
-          },
-          screenSize: MediaQuery.of(context).size,
-          label: comma.label,
-        );
-      }).toList(),
+              context.read<PlayerCubit>().play(comma);
+            },
+            screenSize: MediaQuery.of(context).size,
+            label: comma.label,
+          );
+        }).toList(),
+      ),
     );
   }
 }

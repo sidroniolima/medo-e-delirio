@@ -71,3 +71,6 @@ flutter:
         - asset: fonts/Montserrat-LightItalic.ttf
           style: italic
           weight: 300
+    - family: PermanentMarker
+      fonts:
+        - asset: fonts/PermanentMarker-Regular.ttf
