@@ -5,8 +5,10 @@ import 'package:flutter/widgets.dart';
 import 'package:audio_repository/audio_repository.dart';
 
 import 'app/app.dart';
+import 'donation/donation.dart';
 
-void bootstrap({required CommaApi commaApi}) {
+void bootstrap(
+    {required CommaApi commaApi, required DonationPrompt donationPrompt}) {
   FlutterError.onError = (details) {
     log(details.exceptionAsString(), stackTrace: details.stack);
   };
@@ -18,5 +20,9 @@ void bootstrap({required CommaApi commaApi}) {
       (error, stack) => log(error.toString(), stackTrace: stack));
       */
 
-  runApp(App(audioRepository: audioRepo));
+  runApp(App(
+    audioRepository: audioRepo,
+    donationPrompt: donationPrompt,
+    donationTracker: DonationTracker(),
+  ));
 }

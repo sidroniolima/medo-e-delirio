@@ -4,7 +4,7 @@ import 'package:medo_e_delirio_app/about/about.dart';
 import 'package:medo_e_delirio_app/color_palette.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
-import 'donate_dialog.dart';
+import 'package:medo_e_delirio_app/donation/donation.dart';
 
 enum CustbomBarActionType { about, home }
 

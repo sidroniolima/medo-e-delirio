@@ -5,6 +5,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:local_storage_comma_api/local_storage_comma_api.dart';
 import 'package:medo_e_delirio_app/bootstrap.dart';
+import 'package:medo_e_delirio_app/donation/donation.dart';
 import 'package:medo_e_delirio_app/messaging/messaging.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'firebase_options.dart';
@@ -37,11 +38,15 @@ void main() async {
 
   LocalStorageCommaApiFactory apiFactory = LocalStorageCommaApiFactory();
 
-  final commaApi =
-      await apiFactory.initiate(plugin: await SharedPreferences.getInstance());
+  final preferences = await SharedPreferences.getInstance();
+
+  final commaApi = await apiFactory.initiate(plugin: preferences);
 
   await TokenSubscriber(messaging: await firebaseInstance)
     ..subscribe(fcmToken);
 
-  bootstrap(commaApi: commaApi);
+  bootstrap(
+    commaApi: commaApi,
+    donationPrompt: DonationPrompt(plugin: preferences),
+  );
 }

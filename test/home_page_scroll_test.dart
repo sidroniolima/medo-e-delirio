@@ -3,7 +3,9 @@ import 'package:comma_api/comma_api.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:medo_e_delirio_app/donation/donation.dart';
 import 'package:medo_e_delirio_app/home/view/home_page.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class _FakeCommaApi implements CommaApi {
   @override
@@ -43,8 +45,15 @@ void main() {
       };
       addTearDown(() => FlutterError.onError = onError);
 
-      await tester.pumpWidget(RepositoryProvider.value(
-        value: AudioRepository(commaApi: _FakeCommaApi()),
+      SharedPreferences.setMockInitialValues({});
+      final preferences = await SharedPreferences.getInstance();
+
+      await tester.pumpWidget(MultiRepositoryProvider(
+        providers: [
+          RepositoryProvider.value(
+              value: AudioRepository(commaApi: _FakeCommaApi())),
+          RepositoryProvider.value(value: DonationPrompt(plugin: preferences)),
+        ],
         child: const MaterialApp(home: HomePage()),
       ));
       await tester.pump();

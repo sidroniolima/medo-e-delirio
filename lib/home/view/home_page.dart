@@ -5,6 +5,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:medo_e_delirio_app/@shared/@shared.dart';
 
 import 'package:medo_e_delirio_app/color_palette.dart';
+import 'package:medo_e_delirio_app/donation/donation.dart';
 import 'package:medo_e_delirio_app/player/cubit/player_cubit.dart';
 import 'package:medo_e_delirio_app/player/view/player.dart';
 
@@ -37,7 +38,7 @@ class HomePageView extends StatelessWidget {
   Widget build(BuildContext context) {
     // A single scroll view: the banner collapses, filters and search stay
     // pinned below it and only the grid scrolls under them.
-    return Scaffold(
+    return DonationPromptListener(child: Scaffold(
       body: BlocBuilder<HomeBloc, HomeState>(builder: (context, state) {
         return Stack(
           children: [
@@ -62,7 +63,7 @@ class HomePageView extends StatelessWidget {
           ],
         );
       }),
-    );
+    ));
   }
 
   List<Widget> _buildContent(BuildContext context, HomeState state) {
