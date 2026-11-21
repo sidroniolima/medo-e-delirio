@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:medo_e_delirio_app/@shared/@shared.dart';
 import 'package:medo_e_delirio_app/color_palette.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 
@@ -58,13 +59,11 @@ class _DonateSheetState extends State<_DonateSheet> {
     context.read<DonationPrompt>().snoozeAfterDonation();
 
     navigator.pop();
-    messenger.showSnackBar(SnackBar(
-      content: Text(DonationConfig.isReady
-          ? 'Código copiado! No app do banco, escolha PIX copia e cola.'
-          : 'Chave PIX copiada!'),
-      backgroundColor: ColorPalette.secondary,
-      duration: Duration(seconds: 5),
-    ));
+    messenger.showSnackBar(DonationConfig.isReady
+        ? appSnackBar(
+            title: 'Código copiado!',
+            body: 'No app do banco, escolha PIX copia e cola.')
+        : appSnackBar(title: 'Chave PIX copiada!'));
   }
 
   @override

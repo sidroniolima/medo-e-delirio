@@ -2,7 +2,7 @@ import 'dart:async';
 
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
-import 'package:medo_e_delirio_app/color_palette.dart';
+import 'package:medo_e_delirio_app/@shared/@shared.dart';
 
 /// Android doesn't show FCM notifications while the app is in the
 /// foreground, so they're shown here as a floating in-app message.
@@ -41,33 +41,8 @@ class _ForegroundMessageListenerState extends State<ForegroundMessageListener> {
     final notification = message.notification;
     if (notification == null || !mounted) return;
 
-    // Yellow stands out from the green audio cards behind it.
-    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-      behavior: SnackBarBehavior.floating,
-      backgroundColor: ColorPalette.tertiary,
-      duration: Duration(seconds: 6),
-      showCloseIcon: true,
-      closeIconColor: ColorPalette.primary,
-      content: Column(
-        mainAxisSize: MainAxisSize.min,
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          if (notification.title != null)
-            Text(
-              notification.title!,
-              style: TextStyle(
-                  color: ColorPalette.primary,
-                  fontWeight: FontWeight.bold,
-                  fontSize: 15.0),
-            ),
-          if (notification.body != null)
-            Text(
-              notification.body!,
-              style: TextStyle(color: ColorPalette.primary, fontSize: 14.0),
-            ),
-        ],
-      ),
-    ));
+    ScaffoldMessenger.of(context).showSnackBar(
+        appSnackBar(title: notification.title, body: notification.body));
   }
 
   @override
