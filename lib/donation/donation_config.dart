@@ -14,8 +14,8 @@ class DonationConfig {
   static const promptAmount = 10.0;
 
   /// Ask for a donation after this many finished shares or plays.
-  static const sharesBeforeAsking = 5;
-  static const playsBeforeAsking = 15;
+  static const sharesBeforeAsking = 10;
+  static const playsBeforeAsking = 20;
 
   /// Days to wait before asking again.
   static const daysAfterDismiss = 20;
