@@ -1,0 +1,92 @@
+# Pushes an FCM notification when a new episode comes out on Spreaker.
+# The last notified episode is kept in state.json on the push-state branch.
+#
+# Setup (Settings > Secrets and variables > Actions):
+#   secret   FIREBASE_SERVICE_ACCOUNT  service account JSON with FCM access
+#   variable PUSH_TOPIC                topic for scheduled runs ("debug" if unset)
+name: Episode notifier
+
+on:
+  schedule:
+    - cron: '*/15 * * * *'
+  workflow_dispatch:
+    inputs:
+      topic:
+        description: FCM topic
+        type: choice
+        options: [debug, all]
+        default: debug
+      dry_run:
+        description: Only log the message, send nothing
+        type: boolean
+        default: false
+      force:
+        description: Send the latest episode even if already sent
+        type: boolean
+        default: false
+
+permissions:
+  contents: write
+
+concurrency:
+  group: episode-notifier
+  cancel-in-progress: false
+
+jobs:
+  notify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    defaults:
+      run:
+        working-directory: tools/episode-notifier
+    steps:
+      - uses: actions/checkout@v5
+
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: tools/episode-notifier/package-lock.json
+
+      - run: npm ci
+
+      - run: npm test
+
+      - name: Load state
+        working-directory: .
+        run: |
+          if git ls-remote --exit-code --heads origin push-state > /dev/null; then
+            git fetch --depth=1 origin push-state
+            git worktree add state FETCH_HEAD
+          else
+            git worktree add --orphan -b push-state state
+          fi
+
+      - name: Check and notify
+        env:
+          FIREBASE_SERVICE_ACCOUNT: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
+          PUSH_TOPIC: ${{ inputs.topic || vars.PUSH_TOPIC || 'debug' }}
+          DRY_RUN: ${{ inputs.dry_run || false }}
+          FORCE: ${{ inputs.force || false }}
+          STATE_FILE: ${{ github.workspace }}/state/state.json
+        run: |
+          if [ -n "$FIREBASE_SERVICE_ACCOUNT" ]; then
+            export GOOGLE_APPLICATION_CREDENTIALS="$RUNNER_TEMP/service-account.json"
+            printf '%s' "$FIREBASE_SERVICE_ACCOUNT" > "$GOOGLE_APPLICATION_CREDENTIALS"
+          fi
+          node index.mjs
+
+      - name: Save state
+        working-directory: state
+        run: |
+          [ -f state.json ] || exit 0
+          git add state.json
+          git diff --cached --quiet && exit 0
+          git -c user.name='github-actions[bot]' \
+              -c user.email='41898282+github-actions[bot]@users.noreply.github.com' \
+              commit -m "estado: $(jq -r .lastEpisodeTitle state.json)"
+          git push origin HEAD:push-state
+
+      - name: Remove credentials
+        if: always()
+        run: rm -f "$RUNNER_TEMP/service-account.json"

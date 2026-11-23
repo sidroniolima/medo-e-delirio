@@ -13,6 +13,12 @@
         android:label="Medo e Delírio"
         android:icon="@mipmap/ic_launcher"
         android:usesCleartextTraffic="true">
+        <!-- FCM only reads this as a child of <application>. Without a
+             default_notification_icon it uses the app icon (the logo). -->
+        <meta-data
+            android:name="com.google.firebase.messaging.default_notification_color"
+            android:resource="@color/bgColor" />
+
         <activity
             android:exported="true"
             android:name="io.flutter.embedding.android.FlutterActivity"
@@ -21,14 +27,7 @@
             android:configChanges="orientation|keyboardHidden|keyboard|screenSize|smallestScreenSize|locale|layoutDirection|fontScale|screenLayout|density|uiMode"
             android:hardwareAccelerated="true"
             android:windowSoftInputMode="adjustResize">
-  
-            <meta-data
-                android:name="com.google.firebase.messaging.default_notification_icon"
-                android:resource="@drawable/notification_icon" />
-            <meta-data
-                 android:name="com.google.firebase.messaging.default_notification_color"
-                 android:resource="@color/bgColor" />
-            
+
             <meta-data
                 android:name="io.flutter.embedding.android.SplashScreenDrawable"
                 android:resource="@drawable/launch_background" />

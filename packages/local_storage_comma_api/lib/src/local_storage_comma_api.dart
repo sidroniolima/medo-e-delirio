@@ -1,5 +1,7 @@
-import 'package:http/http.dart' as http;
+import 'dart:async';
 import 'dart:convert';
+
+import 'package:http/http.dart' as http;
 
 import 'package:comma_api/comma_api.dart';
 import 'package:meta/meta.dart';
@@ -48,8 +50,25 @@ class LocalStorageCommaApi implements CommaApi {
   @override
   Stream<List<Comma>> getCommas() => _commaStreamController.asBroadcastStream();
 
+  @visibleForTesting
+  static const kCachedCommasKey = '__commas_cached_catalog_key';
+
+  /// Emits the cached catalog right away (if any) and refreshes it from the
+  /// network. Never throws: without cache and network, the stream gets an error.
   Future<void> init() async {
-    await this.fetchCommas(0, 10000, '');
+    final cachedJson = _getValue(kCachedCommasKey);
+
+    if (cachedJson != null) {
+      _emitCommas(jsonDecode(cachedJson) as List);
+      unawaited(this.fetchCommas(0, 10000, '').catchError((_) {}));
+      return;
+    }
+
+    try {
+      await this.fetchCommas(0, 10000, '');
+    } catch (error, stackTrace) {
+      _commaStreamController.addError(error, stackTrace);
+    }
   }
 
   @override
@@ -65,19 +84,25 @@ class LocalStorageCommaApi implements CommaApi {
       throw CommasRequestFailure();
     }
 
-    final commasJson =
-        jsonDecode(utf8.decode(commasResponse.bodyBytes)) as List;
+    final body = utf8.decode(commasResponse.bodyBytes);
+    final commasJson = jsonDecode(body) as List;
 
     if (commasJson.isEmpty) return;
 
-    List<Comma> favorites = await this.loadFavoritedCommas();
+    await _setValue(kCachedCommasKey, body);
+
+    _emitCommas(commasJson);
+  }
+
+  void _emitCommas(List commasJson) {
+    final favoriteIds = loadFavoritedCommas().map((fav) => fav.id).toSet();
 
     List<Comma> createdCommas = commasJson
         .map((comma) {
           Comma newComma = Comma.fromJson(comma);
-          return (favorites.map((fav) => fav.id).contains(newComma.id)
+          return favoriteIds.contains(newComma.id)
               ? newComma.copyWith(favorite: true)
-              : newComma);
+              : newComma;
         })
         .toList()
         .reversed

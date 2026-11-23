@@ -15,6 +15,7 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
       : _audioRepository = audioRepository,
         super(const HomeState()) {
     on<HomeSubscriptionRequested>(_onHomeSubscriptionRequested);
+    on<HomeRetryRequested>(_onHomeRetryRequested);
     on<HomeFilterChanged>(_onHomeFilterChanged);
     on<HomeQueryChanged>(_onHomeQueryChanged);
     on<HomeFavoriteToggled>(_onHomeFavoriteToggled);
@@ -41,13 +42,21 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
         onError: (_, __) => state.copyWith(status: HomeStatus.failure));
   }
 
-  Future<void> _onHomeFavoriteToggled(
-      HomeFavoriteToggled event, Emitter<HomeState> emit) async {
+  Future<void> _onHomeRetryRequested(
+      HomeRetryRequested event, Emitter<HomeState> emit) async {
     emit(state.copyWith(status: HomeStatus.loading));
     try {
+      await this._audioRepository.fetchCommas(0, 10000, '');
+    } catch (_) {
+      emit(state.copyWith(status: HomeStatus.failure));
+    }
+  }
+
+  // The repository stream emits the updated list, so no status change here.
+  Future<void> _onHomeFavoriteToggled(
+      HomeFavoriteToggled event, Emitter<HomeState> emit) async {
+    try {
       await this._audioRepository.toggleFavorite('', event.comma);
-      emit(state.copyWith(
-          filter: HomeFilter.favorite, status: HomeStatus.success));
     } on Exception {
       emit(state.copyWith(status: HomeStatus.failure));
     }

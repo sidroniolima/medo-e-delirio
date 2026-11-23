@@ -1,0 +1,16 @@
+{
+  "name": "episode-notifier",
+  "private": true,
+  "type": "module",
+  "description": "Pushes an FCM notification when a new Medo e Delírio episode comes out",
+  "engines": {
+    "node": ">=22"
+  },
+  "scripts": {
+    "start": "node index.mjs",
+    "test": "node --test"
+  },
+  "dependencies": {
+    "firebase-admin": "^14.5.1"
+  }
+}

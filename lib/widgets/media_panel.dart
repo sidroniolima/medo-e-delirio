@@ -11,6 +11,8 @@ class MediaPanel extends StatelessWidget {
     required this.author,
     required this.isFavorite,
     required this.favoriteAction,
+    this.isLoading = false,
+    this.isMusic = false,
   });
 
   final Function onPress;
@@ -18,80 +20,95 @@ class MediaPanel extends StatelessWidget {
   final String label;
   final String author;
   final bool isPlaying;
+  final bool isLoading;
   final bool isFavorite;
+  final bool isMusic;
   final Function favoriteAction;
+
+  bool get _isCurrent => isPlaying || isLoading;
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: () {
-        this.onPress();
-      },
-      child: Container(
-        padding: EdgeInsets.all(screenSize.width * .02),
-        width: screenSize.width * .35,
-        height: screenSize.height * .1,
-        decoration: BoxDecoration(
-            color: ColorPalette.secondary,
-            borderRadius: BorderRadius.circular(8.0)),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceAround,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Expanded(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.start,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    this.label,
-                    overflow: TextOverflow.clip,
-                    style: TextStyle(
-                        fontSize: screenSize.width * .036,
-                        color: Colors.white,
-                        fontWeight: FontWeight.w500),
-                  ),
-                  isPlaying
-                      ? Align(
-                          alignment: Alignment.center,
-                          child: Container(
-                            width: screenSize.height * 0.015,
-                            height: screenSize.height * 0.015,
-                            child: Center(
-                              child: CircularProgressIndicator(
-                                valueColor: AlwaysStoppedAnimation<Color>(
-                                  Colors.white,
-                                ),
-                                strokeWidth: 1.0,
-                              ),
-                            ),
-                          ))
-                      : Container(),
-                  Spacer(),
-                  Padding(
-                    padding: EdgeInsets.only(top: screenSize.width * .02),
-                    child: Text(
-                      this.author,
-                      overflow: TextOverflow.clip,
-                      style: TextStyle(
-                          fontSize: screenSize.width * .032,
-                          color: ColorPalette.tertiary,
-                          fontWeight: FontWeight.w500),
-                    ),
-                  )
-                ],
+    final borderRadius = BorderRadius.circular(8.0);
+
+    return Material(
+      color: ColorPalette.secondary,
+      shape: RoundedRectangleBorder(
+        borderRadius: borderRadius,
+        side: _isCurrent
+            ? BorderSide(color: ColorPalette.tertiary, width: 2.0)
+            : BorderSide.none,
+      ),
+      child: InkWell(
+        borderRadius: borderRadius,
+        onTap: () {
+          this.onPress();
+        },
+        child: Padding(
+          padding: EdgeInsets.all(screenSize.width * .02),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Expanded(
+                child: Text(
+                  this.label,
+                  maxLines: 4,
+                  overflow: TextOverflow.ellipsis,
+                  style: TextStyle(
+                      fontSize: screenSize.width * .036,
+                      color: Colors.white,
+                      fontWeight: FontWeight.w500),
+                ),
               ),
-            ),
-            isFavorite
-                ? Icon(
-                    FontAwesomeIcons.solidHeart,
-                    color: ColorPalette.tertiary,
-                    size: 12.0,
-                  )
-                : Container()
-          ],
+              Padding(
+                padding: EdgeInsets.only(top: screenSize.width * .02),
+                child: Row(
+                  children: [
+                    Expanded(
+                      child: Text(
+                        this.author,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        style: TextStyle(
+                            fontSize: screenSize.width * .032,
+                            color: ColorPalette.tertiary,
+                            fontWeight: FontWeight.w500),
+                      ),
+                    ),
+                    ..._buildIndicators(),
+                  ],
+                ),
+              )
+            ],
+          ),
         ),
       ),
     );
+  }
+
+  List<Widget> _buildIndicators() {
+    final icons = <Widget>[
+      if (isLoading)
+        SizedBox(
+          width: 12.0,
+          height: 12.0,
+          child: CircularProgressIndicator(
+            strokeWidth: 1.5,
+            color: ColorPalette.tertiary,
+          ),
+        )
+      else if (isPlaying)
+        Icon(FontAwesomeIcons.volumeHigh,
+            color: ColorPalette.tertiary, size: 12.0),
+      if (isMusic)
+        Icon(FontAwesomeIcons.music, color: Colors.white70, size: 12.0),
+      if (isFavorite)
+        Icon(FontAwesomeIcons.solidHeart,
+            color: ColorPalette.tertiary, size: 12.0),
+    ];
+
+    return [
+      for (final icon in icons) ...[SizedBox(width: 4.0), icon]
+    ];
   }
 }

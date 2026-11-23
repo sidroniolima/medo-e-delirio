@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:io';
 import 'dart:typed_data';
 
@@ -17,10 +18,31 @@ class PlayerCubit extends Cubit<PlayerState> {
   PlayerCubit({required AudioRepository audioRepository, AudioPlayer? player})
       : _player = player ?? AudioPlayer(),
         _audioRepository = audioRepository,
-        super(PlayerState());
+        super(PlayerState()) {
+    _playerStateSubscription = _player.playerStateStream.listen((playerState) {
+      if (playerState.processingState == ProcessingState.completed) {
+        emit(state.copyWith(status: PlayerStatus.stopped));
+      }
+    });
+  }
 
   final AudioPlayer _player;
   final AudioRepository _audioRepository;
+  late final StreamSubscription<dynamic> _playerStateSubscription;
+
+  @override
+  Future<void> close() async {
+    await _playerStateSubscription.cancel();
+    await _player.dispose();
+    return super.close();
+  }
+
+  /// Playback progress of the current audio, from 0.0 to 1.0.
+  Stream<double> get progressStream => _player.positionStream.map((position) {
+        final total = _player.duration?.inMilliseconds ?? 0;
+        if (total == 0) return 0.0;
+        return (position.inMilliseconds / total).clamp(0.0, 1.0);
+      });
 
   Future<void> toggleFavorite(String userId, Comma comma) async {
     await this._audioRepository.toggleFavorite(userId, comma);
@@ -46,12 +68,6 @@ class PlayerCubit extends Cubit<PlayerState> {
 
         await _player.play();
       }
-
-      _player.playerStateStream.listen((playerState) {
-        if (playerState.processingState == ProcessingState.completed) {
-          emit(state.copyWith(status: PlayerStatus.stopped));
-        }
-      });
     } catch (ex) {
       emit(state.copyWith(status: PlayerStatus.crashed));
     }
@@ -88,48 +104,40 @@ class PlayerCubit extends Cubit<PlayerState> {
   }
 
   Future<void> shareSelected() async {
-    try {
-      emit(state.copyWith(status: PlayerStatus.sharing));
+    final fileName = state.audio.fileName;
 
-      Uint8List bytes = await http.readBytes(
-          Uri.https('sidroniolima.com.br', '/med/mp3/${state.audio.fileName}'));
-
-      final temp = await getTemporaryDirectory();
-
-      final path = '${temp.path}/${state.audio.fileName}';
-
-      File(path).writeAsBytesSync(bytes);
-
-      await Share.shareXFiles([XFile(path)]);
-
-      emit(state.copyWith(status: PlayerStatus.shared));
-    } catch (_) {
-      emit(state.copyWith(status: PlayerStatus.crashed));
-    }
+    await _share(ShareStatus.sharingAudio,
+        path: '/med/mp3/$fileName', fileName: fileName);
   }
 
   Future<void> shareVideoForSelected() async {
+    final fileName = state.audio.fileName;
+    final videoFileName =
+        '${fileName.substring(0, fileName.lastIndexOf("."))}.mp4';
+
+    await _share(ShareStatus.sharingVideo,
+        path: '/med/mp4/$videoFileName', fileName: videoFileName);
+  }
+
+  Future<void> _share(ShareStatus share,
+      {required String path, required String fileName}) async {
+    if (state.share != ShareStatus.idle) return;
+
+    emit(state.copyWith(share: share));
     try {
-      emit(state.copyWith(status: PlayerStatus.sharingVideo));
-
-      final fileNameLastIndex = state.audio.fileName.lastIndexOf(".");
-      final videoFileName =
-          '${state.audio.fileName.substring(0, fileNameLastIndex)}.mp4';
-
-      Uint8List bytes = await http.readBytes(
-          Uri.https('sidroniolima.com.br', '/med/mp4/$videoFileName'));
+      Uint8List bytes =
+          await http.readBytes(Uri.https('sidroniolima.com.br', path));
 
       final temp = await getTemporaryDirectory();
+      final filePath = '${temp.path}/$fileName';
 
-      final path = '${temp.path}/$videoFileName';
+      File(filePath).writeAsBytesSync(bytes);
 
-      File(path).writeAsBytesSync(bytes);
-
-      await Share.shareXFiles([XFile(path)]);
-
-      emit(state.copyWith(status: PlayerStatus.shared));
+      await Share.shareXFiles([XFile(filePath)]);
     } catch (_) {
-      emit(state.copyWith(status: PlayerStatus.crashed));
+      // A failed share must not change the playback status.
+    } finally {
+      emit(state.copyWith(share: ShareStatus.idle));
     }
   }
 }

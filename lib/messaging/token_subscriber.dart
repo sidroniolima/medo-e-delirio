@@ -37,6 +37,6 @@ class TokenSubscriber {
   }
 
   Future<void> subscribeTo(List<String> topics) async {
-    topics.forEach((topic) async => await _messaging.subscribeToTopic(topic));
+    await Future.wait(topics.map(_messaging.subscribeToTopic));
   }
 }
